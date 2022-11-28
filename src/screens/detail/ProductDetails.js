@@ -33,22 +33,64 @@ const style = {
 
 const ProductDetails = () => {
     const bg = "#74C3AD";
+   
     const [open, setOpen] = React.useState(false);
     const [product, setProduct] = useState({})
     const [error, setError] = useState("")
     const {id} = useParams();
+    const [AddProductQty, setAddProductQty] = useState({    
+        id:id,
+        quantity:0,
+        note:""
+    })
+    const [RawMaterialList, setRawMaterialList] = useState([])
+    const [RawMaterialQty, setRawMaterialQty] = useState([])
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     useEffect(() => {
         getProductsByID(id)
     }, [id])
+
+    useEffect(() => {
+        const tempRawMaterial = []
+        const tempRawMaterialQty = []
+        if(product){
+            product?.contains?.map(rawMaterial=>{
+                tempRawMaterial.push(rawMaterial['rm'])
+                tempRawMaterialQty.push(rawMaterial['qty'])
+            });
+            setRawMaterialList(tempRawMaterial)
+            setRawMaterialQty(tempRawMaterialQty)
+        }
+    }, [product])
+    
     const getProductsByID = async (ProductId) =>{
-        await axiousConfig.get(`/getRawMaterialById/?id=${ProductId}`)
+        await axiousConfig.get(`/getProductById/?id=${ProductId}`)
         .then(res=>{
             console.log(res.data.data)
             setProduct(res.data.data)
         })
         .catch(err=>setError(err.response.data.message))
+    }
+
+    const handleChange = e =>{
+        const name = e.target.name;
+        const value = e.target.value;
+        setAddProductQty({...AddProductQty,[name]:value})
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await axiousConfig.put("/addProductQuantity",AddProductQty)
+        .then(res=>res.data)
+        .catch(err=>err.response.data)
+        handleClose()
+        console.log(response)
+        if(response.statusCode===200)
+        {
+            getProductsByID(id)
+            // getProductLog()
+        }
     }
 
     return (
@@ -72,7 +114,7 @@ const ProductDetails = () => {
                             >Sr</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 400 }}
-                            >{product.serialNo}</Typography>
+                            >{product.srNo}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -138,7 +180,7 @@ const ProductDetails = () => {
                             >Raw material list</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 300 }}
-                            >Very hard working</Typography>
+                            >{RawMaterialList.join(" , ")}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -149,7 +191,7 @@ const ProductDetails = () => {
                             >Raw material quantity</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 300 }}
-                            >Very hard working</Typography>
+                            >{RawMaterialQty.join(" , ")}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -169,34 +211,49 @@ const ProductDetails = () => {
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
+                                    <form onSubmit={handleSubmit}>
                                     <Box sx={style}>
                                         <Typography variant="h5" className="text-center">Add quantity</Typography>
-                                        <TextField id="outlined-basic" label="Quantity" variant="outlined"
-                                            className="w-100 my-4" required
+                                        <TextField 
+                                            id="outlined-basic" 
+                                            label="Quantity" 
+                                            variant="outlined"
+                                            className="w-100 my-4" 
+                                            name="quantity"
+                                            onChange={handleChange}
+                                            required
                                         />
                                         <TextareaAutosize
                                             aria-label="minimum height"
                                             minRows={3}
                                             placeholder="Additional note"
                                             style={{ width: 200, width: '100%', padding: 12 }}
+                                            name="note"
+                                            onChange={handleChange}
                                         />
 
                                         <br />
                                         <br />
                                         <div>
-                                            <Button className="w-50 fs-6" variant="text"
+                                            <Button 
+                                                className="w-50 fs-6" 
+                                                variant="text"
                                                 style={{ color: bg }}
                                                 onClick={handleClose}
                                             >
                                                 Cancel
                                             </Button>
-                                            <Button className="w-50 fs-6" variant="contained"
+                                            <Button 
+                                                className="w-50 fs-6" 
+                                                variant="contained"
                                                 style={{ background: bg }}
+                                                type="submit"
                                             >
                                                 Add
                                             </Button>
                                         </div>
                                     </Box>
+                                    </form>
                                 </Modal>
                             </Typography>
                         </div>
@@ -209,7 +266,7 @@ const ProductDetails = () => {
                         className="px-3 py-3 pt-4"
                         style={{ color: "#219653", fontSize: 22 }}
                     >
-                        Raw material to be received by contractor
+                        Raw material to be received by contractor 
                     </div>
                 </Paper>
                 <br />
@@ -224,7 +281,7 @@ const ProductDetails = () => {
                         className="px-3 py-3 pt-4"
                         style={{ color: "#219653", fontSize: 22 }}
                     >
-                        Raw material received by contractor
+                        Raw material received by contractor 
                     </div>
                 </Paper>
                 <br />

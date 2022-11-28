@@ -61,6 +61,8 @@ function BasicTable() {
   const getProductList =  () => {
      axiousConfig.get(`/getAllProduct/?page=${page}&limit=${rowsPerPage}`)
           .then((res) => {
+              console.log(res.data.data.list);
+              // console.log(res.data.data.list.contains)
               setProductList(res.data.data.list);
         });
   };
@@ -84,7 +86,15 @@ function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productList.map((row, index) => (
+          {productList.map((row, index) => {
+            const RawMaterialList = []
+            const RawMaterialQty = []
+             row.contains.map(RawMaterial=>{
+              RawMaterialList.push(RawMaterial["rm"])
+              RawMaterialQty.push(RawMaterial["qty"])
+            });
+            // console.log(RawMaterialList,RawMaterialQty)
+            return(
             <TableRow
               key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -97,11 +107,12 @@ function BasicTable() {
               <TableCell align="center">{row.price}</TableCell>
               <TableCell align="center">{row.availableQty}</TableCell>
               <TableCell align="center">{row.category}</TableCell>
-              <TableCell align="center">{row.contains.name}</TableCell>
-              <TableCell align="center">{row.contains.quantityAvailable}</TableCell>
+              <TableCell align="center">{RawMaterialList.join(",")}</TableCell>
+              <TableCell align="center">{RawMaterialQty.join(",")}</TableCell>
               <TableCell align="left"><Button className="p-0" style={{ minWidth: 45 }} onClick={()=>{navigate('/manage/product/'+row.id)}} >Edit</Button></TableCell>
             </TableRow>
-          ))}
+            )
+          })}
         </TableBody>
       </Table>
     </TableContainer >

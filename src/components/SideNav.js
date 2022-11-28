@@ -165,7 +165,7 @@ const SideNav = () => {
                                     >
                                         <div className='d-flex align-items-center fs-6 mb-3'>
                                             <img src={Add} alt="" className='me-2' />
-                                            Add products to manufacturing
+                                            Assign raw Material to contractor
                                         </div>
                                     </div>
                                     <div className='ms-5'

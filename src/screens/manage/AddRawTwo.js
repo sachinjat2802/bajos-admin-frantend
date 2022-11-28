@@ -48,18 +48,28 @@ const AddProductTwo = () => {
     const [product, setProduct] = useState([]);
     const [error, setError] = useState("");
 
+    const [RawMaterialMeasureUnits, setRawMaterialMeasureUnits] = useState([])
+
     useEffect(() => {
+        getRawMaterialMeasureUnits();
         getRawMaterial();
         getProducts();
     }, []);
+
+    const getRawMaterialMeasureUnits = () => {
+        axiousConfig.get(`/rawMaterialMeasureUnits`)
+            .then(res=>setRawMaterialMeasureUnits(res.data.data))
+            .catch(err=>console.log(err.response.data.message))
+    }
+
     const getRawMaterial = () => {
-        axios.get("/api/rawMaterial").then((res) => {
+        axiousConfig.get("/getAllRawMaterial").then((res) => {
             setRawMaterial(res.data);
         });
     };
 
     const getProducts = () => {
-        axios.get("/api/products").then((res) => {
+        axiousConfig.get("/getAllProduct").then((res) => {
             setProduct(res.data);
         });
     };
@@ -151,21 +161,21 @@ const AddProductTwo = () => {
     const [rawQuantity, setRawQuantity] = useState([]);
 
     // console.log(rawMaterialInput);
-    const postNewProduct = () => {
-        const { name, sr, sku, category, raw } = newProduct;
-        axios
-            .post("/api/addNewProduct", {
-                name: name,
-                sr: product.length + 1,
-                sku: sku,
-                category: category,
-                raw: form,
-            })
-            .then((res) => {
-                setProductOpen(true);
-                window.location.reload(true);
-            });
-    };
+    // const postNewProduct = () => {
+    //     const { name, sr, sku, category, raw } = newProduct;
+    //     axios
+    //         .post("/api/addNewProduct", {
+    //             name: name,
+    //             sr: product.length + 1,
+    //             sku: sku,
+    //             category: category,
+    //             raw: form,
+    //         })
+    //         .then((res) => {
+    //             setProductOpen(true);
+    //             window.location.reload(true);
+    //         });
+    // };
 
     // useEffect(() => {
     //   if (rawMaterial.length > 0 && addDiv.length === 0) {
@@ -196,99 +206,7 @@ const AddProductTwo = () => {
         data.splice(index, 1);
         setForm(data);
     };
-    //const Input = ({ key }) => {
-    //return (
-    // <Box className="d-flex justify-content-between">
-    //   <select
-    //     type={"text"}
-    //     style={{ maxwidth: 400, minWidth: 400 }}
-    //     className="global-input-2"
-    //     name="rm"
-    //     onChange={(e) => {
-    //       const _data = [...rawMaterialInput];
-    //       _data[key] = e.target.value;
-    //       setRawMaterialInput(_data);
-    //     }}
-    //     value={rawMaterialInput[key]}
-    //   >
-    //     <option selected>Select Raw Material</option>
-    //     {console.log(rawMaterial)}
-    //     {rawMaterial?.map((r) => {
-    //       return <option>{r.name}</option>;
-    //     })}
-    //   </select>
-
-    //   <input
-    //     type={"number"}
-    //     style={{ maxWidth: 300, minWidth: 300 }}
-    //     className="global-input-2"
-    //     placeholder="Used Qty in Meter"
-    //     name="qty"
-    //     onChange={(e) => {
-    //       const _data = [...rawQuantity];
-    //       _data[key] = e.target.value;
-    //       setRawQuantity(_data);
-    //     }}
-    //     value={rawQuantity[key]}
-    //   />
-    // </Box>
-    //     <Box className="d-flex justify-content-between">
-    //       <FormControl
-    //         sx={{
-    //           m: 1.5,
-    //           width: 400,
-    //           height: 50,
-    //           border: "1px solid #045538",
-    //           borderRadius: 3,
-    //           paddingBottom: 7,
-    //         }}
-    //       >
-    //         <InputLabel
-    //           id="demo-multiple-checkbox-label"
-    //           sx={{
-    //             color: "black",
-    //             fontSize: 24,
-    //             paddingTop: -2,
-    //             "& .css-1lupbjb-MuiFormLabel-root-MuiInputLabel-root": {
-    //               transition: "none",
-    //               fontFamily: "Poppins, sans-serif",
-    //             },
-    //           }}
-    //         >
-    //           Select Raw Material
-    //         </InputLabel>
-    //         <Select
-    //           labelId="demo-multiple-checkbox-label"
-    //           id="demo-multiple-checkbox"
-    //           // multiple
-    //           value={personName}
-    //           onChange={handleChange}
-    //           input={<OutlinedInput label="Select Raw Material" />}
-    //           renderValue={(selected) => selected}
-    //           MenuProps={MenuProps}
-    //           name="rm"
-    //         >
-    //           {rawMaterial?.map((raw) => (
-    //             <MenuItem key={raw.name} value={raw.id}>
-    //               <Checkbox checked={personName.indexOf(raw.id) > -1} />
-    //               <ListItemText primary={raw.name} />
-    //             </MenuItem>
-    //           ))}
-    //         </Select>
-    //       </FormControl>
-    //       <input
-    //         type={"number"}
-    //         style={{ maxWidth: 300, minWidth: 300 }}
-    //         className="global-input-2"
-    //         placeholder="Used Qty in Meter"
-    //         name="qty"
-    //         onChange={handleNewProduct}
-    //         value={qty}
-    //       />
-    //     </Box>
-    //   );
-    // };
-/* RAW MATERIALLLLLL */
+  /* RAW MATERIALLLLLL */
     return (
         <>
             <Box className="d-flex">
@@ -364,12 +282,11 @@ const AddProductTwo = () => {
                                     required
                                 >
                                     <option selected>Select Messure Unit</option>
-                                    <option>KG</option>
-                                    <option>Grams</option>
-                                    <option>Meters</option>
-                                    <option>Centimeters</option>
-                                    <option>Inch</option>
-                                    <option>Pcs</option>
+                                    {RawMaterialMeasureUnits.length>0&&
+                                        RawMaterialMeasureUnits.map(MeasurementUnit=>{
+                                            return <option>{MeasurementUnit}</option>
+                                        })
+                                    }
                                 </select>
                             </Box>
                             <Box className="d-flex justify-content-center">

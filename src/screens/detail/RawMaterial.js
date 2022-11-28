@@ -35,14 +35,20 @@ const RawMaterial = () => {
     const bg = "#74C3AD";
     const { id } = useParams();
     const [error, setError] = useState("")
-    // console.log(id)
     const [rawMaterial, setRawMaterial] = useState({})
+    const [RawMaterialLog, setRawMaterialLog] = useState([])
+    const [addRawMaterialQuantity, setAddRawMaterialQuantity] = useState({
+        id:id,
+        quantity:0,
+        note:""
+    })
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     useEffect(() => {
       getRawMaterial(id)
+      getRawMaterialLog(id)
     }, [])
     const getRawMaterial = async (materialId) =>{
         await axiousConfig.get(`/getRawMaterialById/?id=${materialId}`)
@@ -53,6 +59,38 @@ const RawMaterial = () => {
             })
         .catch(err=>setError(err.response.data.message))
     }
+
+    const getRawMaterialLog = async (materialId) => {
+        await axiousConfig.get(`/rowMaterialLogByID?id=${materialId}`)
+        .then(res=>{
+            console.log(res.data.data)
+            setRawMaterialLog(res.data.data)
+        })
+        .catch(err=>console.log(err.response.data.message))
+    }
+
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setAddRawMaterialQuantity({ ...addRawMaterialQuantity, [name]: value });
+    };
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        // console.log(addRawMaterialQuantity)
+        const response = axiousConfig.put("/addQuantity",addRawMaterialQuantity)
+        .then(res=>res.data)
+        .catch(err=>err.response.data)
+        handleClose()
+        if(response.statusCode===200)
+        {
+            console.log(response.data)
+            getRawMaterial(id)
+            getRawMaterialLog(id)
+        }
+    }
+
+
 
     return (
         <Box className="d-flex">
@@ -130,15 +168,24 @@ const RawMaterial = () => {
                                 aria-labelledby="modal-modal-title"
                                 aria-describedby="modal-modal-description"
                             >
+                                <form onSubmit={handleSubmit}>
                                 <Box sx={style}>
                                     <Typography variant="h5" className="text-center">Add quantity</Typography>
-                                    <TextField id="outlined-basic" label="Quantity" variant="outlined"
-                                        className="w-100 my-4" required
+                                    <TextField 
+                                        id="outlined-basic" 
+                                        label="Quantity" 
+                                        variant="outlined"
+                                        className="w-100 my-4" 
+                                        name="quantity"
+                                        onChange={handleChange}
+                                        required
                                     />
                                     <TextareaAutosize
                                         aria-label="minimum height"
                                         minRows={3}
                                         placeholder="Additional note"
+                                        name="note"
+                                        onChange={handleChange}
                                         style={{ width: 200, width: '100%', padding: 12 }}
                                     />
 
@@ -151,13 +198,17 @@ const RawMaterial = () => {
                                         >
                                             Cancel
                                         </Button>
-                                        <Button className="w-50 fs-6" variant="contained"
+                                        <Button 
+                                            className="w-50 fs-6" 
+                                            variant="contained"
                                             style={{ background: bg }}
+                                            type="submit"
                                         >
                                             Add
                                         </Button>
                                     </div>
                                 </Box>
+                                </form>
                             </Modal>
                         </div>
                     </div>
@@ -175,7 +226,7 @@ const RawMaterial = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable />
+                    <BasicTable RawMaterialLog={RawMaterialLog} />
                 </Paper>
                 <br />
                 <br />
@@ -205,7 +256,7 @@ function createData(date, qty, note, contractor) {
     return { date, qty, note, contractor };
 }
 
-const rows = [
+const rows =  [
     createData('12-10-15', 159, "Something something", 'John doe'),
     createData('12-15-15', 237, "Lorem ispum", "Someone"),
     createData('10-8-22', 262, "Virat Kohli", "XD XD XD"),
@@ -216,8 +267,8 @@ const rows = [
 
 
 const columns = [
-    { id: 'date', label: 'Date', minWidth: 170 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'time', label: 'Date', minWidth: 170  },
+    { id: 'quantity', label: 'Quantity', minWidth: 150 },
     {
         id: 'note',
         label: 'Note',
@@ -246,7 +297,7 @@ const columns2 = [
 ];
 
 
-function BasicTable() {
+function BasicTable({RawMaterialLog}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -278,7 +329,7 @@ function BasicTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
+                        {RawMaterialLog
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (

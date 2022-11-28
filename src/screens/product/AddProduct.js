@@ -15,6 +15,7 @@ import SideNav from "../../components/SideNav";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import axiousConfig from "../../axiousConfig";
 
 const AddProduct = () => {
   const bg = "#74C3AD";
@@ -51,8 +52,9 @@ const AddProduct = () => {
   }, []);
 
   const getProducts = () => {
-    axios.get("/api/products").then((res) => {
-      setProducts(res.data);
+    axiousConfig.get(`/getAllProduct`)
+    .then((res) => {
+      setProducts(res.data.data.list);
     });
   };
 
@@ -61,7 +63,7 @@ const AddProduct = () => {
     const el = e.target.childNodes[index];
     const pro_id = el.getAttribute("id");
     console.log(pro_id);
-    const res = await axios.get(`/api/product/${pro_id}`);
+    const res = await axiousConfig.get(`/product/${pro_id}`);
     console.log(res.data);
     setProductIdData(res.data);
     setProId(pro_id);
@@ -75,8 +77,8 @@ const AddProduct = () => {
 
     for (let i = 0; i < productIdData?.raw?.length; i++) {
       // console.log(productIdData?.raw[i].rm);
-      const res = await axios.get(
-        `/api/rawMaterial/${productIdData?.raw[i].rm}`
+      const res = await axiousConfig.get(
+        `/rawMaterial/${productIdData?.raw[i].rm}`
       );
       //  console.log(res.data)
       if (res.data["rawid"] == undefined) {
@@ -88,8 +90,9 @@ const AddProduct = () => {
     setStoreRaw(storeraw);
   };
   const getContractorData = () => {
-    axios.get("/api/contractors").then((res) => {
-      setContractors(res.data);
+    axiousConfig.get(`/getAllContractor`).then((res) => {
+      console.log(res.data.data.list)
+      setContractors(res.data.data.list);
     });
   };
 
@@ -121,7 +124,7 @@ const AddProduct = () => {
    // console.log(Num.qty_in_meter, Num.price_per_meter);
 
     // axios
-    //   .post(`/api/addProductToManufacture`, {
+    //   .post(`/addProductToManufacture`, {
     //     qty_in_meter: Num.qty_in_meter,
     //     price_per_meter: Num.price_per_meter,
     //     raw_id: prodId,
@@ -133,8 +136,8 @@ const AddProduct = () => {
   const handleAddToManufacture = () => {
     const { contractor, product, labour_cost_per_pcs, cur_date, raw_id } =
       addProductToManufacturing;
-    axios
-      .post("/api/addProductToManufacturing", {
+    axiousConfig
+      .post("/addProductToManufacturing", {
         contractor: contractor,
         product: productIdData.name,
         labour_cost_per_pcs: labour_cost_per_pcs,
@@ -144,10 +147,10 @@ const AddProduct = () => {
       .then((res) => {
         // console.log(res.data);
       }); 
-     axios.post("/api/addProductToManufacture", {
-        qty_in_meter: 1,
-        price_per_meter:1,
-        raw_id: prodId,
+     axiousConfig.post(`/addProductToManufacture/${prodId}`, {
+      "rawMaterial": raw_id,
+      "quantity": 0.01,
+      "note":"xyz"
       })
       .then((res) => {
         setProductOpen(true);
@@ -160,7 +163,7 @@ const AddProduct = () => {
       console.log(selectedRaw);
       console.log(productIdData)
       axios
-      .post("/api/addProductToManufacture", {
+      .post("/addProductToManufacture", {
         qty_in_meter: qtyInMeter[selectedRaw.rm],
         price_per_meter: pricePerMeter[selectedRaw.rm],
         raw_id: prodId,
@@ -175,7 +178,7 @@ const AddProduct = () => {
   };
 
   const getRawMaterial = () => {
-    axios.get("/api/rawMaterial").then((res) => {
+    axiousConfig.get("/rawMaterial").then((res) => {
       setRawMaterial(res.data);
     });
   };
@@ -218,7 +221,7 @@ const AddProduct = () => {
             className="px-3 py-3 pt-4"
             style={{ color: "#219653", fontSize: 22 }}
           >
-            Add Product to Manufacturing
+            Assign Raw Material to Contractor
           </div>
         </Paper>
         <br />
@@ -243,7 +246,7 @@ const AddProduct = () => {
           name="product"
           onChange={handleProductId}
         >
-          <option selected>Select Product from list</option>
+          <option selected>Select raw Material from list</option>
           {products?.map((item) => {
             return <option id={item.id}>{item.name}</option>;
           })}
@@ -257,7 +260,8 @@ const AddProduct = () => {
               <TableRow>
                 <TableCell>Rmku</TableCell>
                 <TableCell align="center">Raw Material Name</TableCell>
-                <TableCell align="center">Qty. in meters</TableCell>
+                <TableCell align="center">Availabe Quantity</TableCell>
+                <TableCell align="center">Quantity to Assign</TableCell>
                 <TableCell align="center">Price per meter</TableCell>
               </TableRow>
             </TableHead>
@@ -349,7 +353,7 @@ const AddProduct = () => {
               }}
               onClick={handleAddToManufacture}
             >
-              Submit for production
+              Assign
             </button>
           </div>
           {productOpen && (

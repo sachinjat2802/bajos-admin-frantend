@@ -354,12 +354,12 @@ cloth += arr[i];
             <TableHead>
               <TableRow>
                 <TableCell>Sr</TableCell>
-                <TableCell align="right">Expected Products</TableCell>
+                <TableCell align="right">Products Name</TableCell>
                 <TableCell align="right">
-                  Expected Remaining Raw Materials
+                  Quantity Recieved
                 </TableCell>
-                <TableCell align="center">Enter Recieved Product</TableCell>
-                <TableCell align="center">Enter Raw Material</TableCell>
+                <TableCell align="center">Expected Price Per Piece</TableCell>
+                <TableCell align="center">Correct Price</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

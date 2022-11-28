@@ -25,7 +25,6 @@ const Login = ({setauthenticated }) => {
 
   async function loginUser(credentials) {
     // var response = "";
-    console.log(credentials)
     return axiousConfig.post('/login',JSON.stringify(credentials))
     .then(res =>res.data)
     .catch(err=>err.response.data)
@@ -37,7 +36,7 @@ const Login = ({setauthenticated }) => {
       phone,
       password
     });
-     //console.log(response)
+    console.log(response)
     if((response.statusCode === 200)&&('data' in response))
     {
       setauthenticated(true)

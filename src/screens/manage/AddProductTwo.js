@@ -78,6 +78,7 @@ const AddProductTwo = () => {
     const getProducts = () => {
         axiousConfig.get("/getAllProduct")
         .then((res) => {
+            console.log(res.data.data.list)
             setProduct(res.data.data.list);
         });
     };
@@ -140,7 +141,7 @@ const AddProductTwo = () => {
 
     const postRawMaterial = () => {
         const { name, sr, rmku, messure_unit } = rawMaterialData;
-            axiousConfig.post("/api/addRawMaterial", {
+            axiousConfig.post("/addRawMaterial", {
                 name: name,
                 sr: rawMaterial.length + 1,
                 rmku: rmku,
@@ -588,14 +589,14 @@ function TableData() {
         getRawMaterial();
     }, []);
     const getRawMaterial = () => {
-        axios.get("/api/rawMaterial").then((res) => {
+        axiousConfig.get("rawMaterial").then((res) => {
             setRawMaterial(res.data);
         });
     };
     // console.log(rawMaterial);
     const show_item_after_delete = () => {
         setTimeout(() => {
-            axios.get(`/api/rawMaterial`).then((res) => {
+            axiousConfig.get(`rawMaterial`).then((res) => {
                 setRawMaterial(res.data);
             });
         }, 500);
