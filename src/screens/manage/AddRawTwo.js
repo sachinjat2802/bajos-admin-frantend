@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
+// import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,21 +12,20 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SideNav from "../../components/SideNav";
 import axios from "axios";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
+// import Select, { SelectChangeEvent } from "@mui/material/Select";
+// import Checkbox from "@mui/material/Checkbox";
+// import OutlinedInput from "@mui/material/OutlinedInput";
+// import InputLabel from "@mui/material/InputLabel";
 import { Button } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
+// import MenuItem from "@mui/material/MenuItem";
+// import FormControl from "@mui/material/FormControl";
+// import ListItemText from "@mui/material/ListItemText";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import axiousConfig from '../../axiousConfig'
 
 const AddProductTwo = () => {
     const bg = "#74C3AD";
-
     const [rawMaterialData, setRawMaterialData] = useState({
         name: "",
         sr: "",

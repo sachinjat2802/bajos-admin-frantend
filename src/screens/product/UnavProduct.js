@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import Img1 from "../../assets/bubble.png";

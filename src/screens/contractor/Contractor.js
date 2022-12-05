@@ -1,11 +1,11 @@
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState,useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
-import Paper from "@mui/material/Paper";
+//import Img1 from "../../assets/bubble.png";
+//import Paper from "@mui/material/Paper";
 import { Checkbox } from "@mui/material";
 import SideNav from "../../components/SideNav";
-import axios from "axios";
+//import axios from "axios";
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 
@@ -27,7 +27,7 @@ const Contractor = () => {
     name = e.target.name;
     value = e.target.value;
     checked = e.target.checked;
-    if (e.target.name == "is_authorised") {
+    if (e.target.name === "is_authorised") {
       setContractorData({ ...contractorData, [name]: checked });
     } else {
       setContractorData({ ...contractorData, [name]: value });
@@ -35,7 +35,7 @@ const Contractor = () => {
   };
 
   const postContractor = () => {
-    const { name, phone, email, extra, note, is_authorised } = contractorData;
+    const { name, phone, email, note } = contractorData;
     axiousConfig.post("addContractor",{
         name: name,
         phone: phone,

@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable no-unused-vars */
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
@@ -77,7 +80,6 @@ function BasicTable() {
             <TableCell>Sr</TableCell>
             <TableCell>Sku</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Cost per pcs</TableCell>
             <TableCell>Available Qty</TableCell>
             <TableCell>Category</TableCell>
             <TableCell>Raw Mat. List</TableCell>
@@ -89,6 +91,7 @@ function BasicTable() {
           {productList.map((row, index) => {
             const RawMaterialList = []
             const RawMaterialQty = []
+             // eslint-disable-next-line array-callback-return
              row.contains.map(RawMaterial=>{
               RawMaterialList.push(RawMaterial["rm"])
               RawMaterialQty.push(RawMaterial["qty"])

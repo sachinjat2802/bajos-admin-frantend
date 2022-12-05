@@ -1,14 +1,14 @@
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import React from 'react'
 import Img1 from '../assets/bubble.png'
-import { Fab } from '@mui/material';
-import Img2 from '../assets/left-arrow.png'
+// import { Fab } from '@mui/material';
+// import Img2 from '../assets/left-arrow.png'
 import ProductIcon from '../assets/icons/ProductIcon'
 import LogoutIcon from '../assets/icons/LogoutIcon'
 import EndProductIcon from '../assets/icons/EndProductIcon'
 import ContractorIcon from '../assets/icons/ContractorIcon'
 import InProcessIcon from '../assets/icons/InProcessIcon';
-import Detail from '../assets/detail.png'
+// import Detail from '../assets/detail.png'
 import Note from '../assets/note.png'
 import Chart from '../assets/chart.png'
 import File from '../assets/file.png'

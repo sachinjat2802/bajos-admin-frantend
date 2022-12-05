@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {  Routes, Route } from "react-router-dom";
 import Home from "./screens/home/Home";
 import Login from "./screens/login/Login";
 import Manage from "./screens/manage/Manage";
@@ -14,11 +14,8 @@ import Report from "./screens/product/Report";
 import UnavProduct from "./screens/product/UnavProduct";
 import ExportExcel from "./screens/product/ExcelExport";
 import InFactory from "./screens/product/InFactory";
-import { useState, useEffect } from "react";
-import Protected from "./components/Protected";
+import { useState } from "react";
 import ContractorEfficiency from "./screens/contractor/ContractorEfficiency";
-import axios from "axios";
-import AddRaw from "./screens/manage/AddProductTwo";
 import AddProductTwo from "./screens/manage/AddProductTwo";
 import AddRawTwo from "./screens/manage/AddRawTwo";
 import RawMaterial from "./screens/detail/RawMaterial";
@@ -28,7 +25,6 @@ import ProductDetails from "./screens/detail/ProductDetails";
 function App() {
   // const [isLoggedIn, setisLoggedIn] = useState(true);
   // const history = useHistory();
-  const navigate = useNavigate();
 
   const [authenticated, setauthenticated] = useState(
     localStorage.getItem("authenticated") || false

@@ -1,13 +1,16 @@
 import React, { useState , useEffect } from "react";
 import "./Login.css";
 import { Row, Col } from "react-bootstrap";
+// eslint-disable-next-line no-unused-vars
 import { Box, Button } from "@mui/material";
 import Img1 from "../../assets/mobile.png";
 import Img2 from "../../assets/shield.png";
+// eslint-disable-next-line no-unused-vars
 import { fontWeight } from "@mui/system";
 // import axios from "axios";
 import axiousConfig from '../../axiousConfig'
 import { useNavigate } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import axios from "axios";
 
 const Login = ({setauthenticated }) => {
@@ -20,6 +23,7 @@ const Login = ({setauthenticated }) => {
   const navigate = useNavigate();
   useEffect(() => {
     navigate('/login')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
 
@@ -129,7 +133,7 @@ return (
                 />
               </div>
               <Box>
-                {phone.length == 10 && password.length > 1 ? (
+                {phone.length === 10 && password.length > 1 ? (
                   <button
                     className="btn my-4"
                     style={{

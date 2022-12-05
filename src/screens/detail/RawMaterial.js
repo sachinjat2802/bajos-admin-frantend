@@ -1,6 +1,7 @@
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
 import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import SideNav from "../../components/SideNav";
@@ -13,6 +14,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+// eslint-disable-next-line no-unused-vars
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 
@@ -37,6 +39,7 @@ const RawMaterial = () => {
     const [error, setError] = useState("")
     const [rawMaterial, setRawMaterial] = useState({})
     const [RawMaterialLog, setRawMaterialLog] = useState([])
+    const [RawMaterialContracterById,setRawMaterialContracterById]=useState([])
     const [addRawMaterialQuantity, setAddRawMaterialQuantity] = useState({
         id:id,
         quantity:0,
@@ -49,6 +52,8 @@ const RawMaterial = () => {
     useEffect(() => {
       getRawMaterial(id)
       getRawMaterialLog(id)
+      getRawMaterialContracterById(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const getRawMaterial = async (materialId) =>{
         await axiousConfig.get(`/getRawMaterialById/?id=${materialId}`)
@@ -65,6 +70,15 @@ const RawMaterial = () => {
         .then(res=>{
             console.log(res.data.data)
             setRawMaterialLog(res.data.data)
+        })
+        .catch(err=>console.log(err.response.data.message))
+    }
+
+    const getRawMaterialContracterById = async (materialId) => {
+        await axiousConfig.get(`/getRawMaterialContracterById?id=${materialId}`)
+        .then(res=>{
+            console.log(res.data.data)
+            setRawMaterialContracterById(res.data.data)
         })
         .catch(err=>console.log(err.response.data.message))
     }
@@ -87,6 +101,7 @@ const RawMaterial = () => {
             console.log(response.data)
             getRawMaterial(id)
             getRawMaterialLog(id)
+            getRawMaterialContracterById(id)
         }
     }
 
@@ -186,6 +201,7 @@ const RawMaterial = () => {
                                         placeholder="Additional note"
                                         name="note"
                                         onChange={handleChange}
+                                        // eslint-disable-next-line no-dupe-keys
                                         style={{ width: 200, width: '100%', padding: 12 }}
                                     />
 
@@ -241,7 +257,7 @@ const RawMaterial = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable2 />
+                <BasicTable3 RawMaterialContracterById={RawMaterialContracterById} />
                 </Paper>
             </Box>
             )
@@ -277,24 +293,25 @@ const columns = [
         format: (value) => value.toLocaleString('en-US'),
     },
 ];
+
+
+
 const columns2 = [
-    { id: 'date', label: 'Date', minWidth: 170 },
+    { id: 'time', label: 'Date', minWidth: 170  },
+    { id: 'contractor', label: 'Contractor', minWidth: 170  },
     { id: 'qty', label: 'Quantity', minWidth: 150 },
-    {
-        id: 'contractor',
-        label: 'Contractor',
-        minWidth: 170,
-        align: 'left',
-        format: (value) => value.toLocaleString('en-US'),
-    },
+    
     {
         id: 'note',
         label: 'Note',
         minWidth: 200,
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
-    },
+    },    { id: 'pricePerUnit', label: 'pricePerUnit', minWidth: 150 },
+
+    
 ];
+
 
 
 function BasicTable({RawMaterialLog}) {
@@ -363,6 +380,71 @@ function BasicTable({RawMaterialLog}) {
     );
 }
 
+function BasicTable3({RawMaterialContracterById}) {
+
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    return (
+        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            {columns2.map((column) => (
+                                <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ minWidth: column.minWidth }}
+                                >
+                                    {column.label}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {RawMaterialContracterById
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => {
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        {columns2.map((column) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                    {column.format && typeof value === 'number'
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </Paper>
+    );
+}
 
 
 
@@ -370,6 +452,8 @@ function BasicTable({RawMaterialLog}) {
 
 
 
+
+// eslint-disable-next-line no-unused-vars
 function BasicTable2() {
 
     const [page, setPage] = React.useState(0);

@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Manage = () => {
-  const bg = "#74C3AD";
   
   const [rawMaterialData, setRawMaterialData] = useState({
     name: "",
@@ -238,6 +237,7 @@ function TableData() {
 
   useEffect(() => {
     getRawMaterial();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page,rowsPerPage]);
   const getRawMaterial = () => {
     axiousConfig.get(`getAllRawMaterial/?page=${page}&limit=${rowsPerPage}`)

@@ -1,13 +1,15 @@
 import { Box } from "@mui/system";
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import SideNav from "../../components/SideNav";
 
 const RawMaterial = () => {
-    const bg = "#74C3AD";
-    const [carpenter, setCarpenter] = useState("");
-    const [product, setProduct] = useState("");
+    // const bg = "#74C3AD";
+    // const [carpenter, setCarpenter] = useState("");
+    // const [product, setProduct] = useState("");
 
     return (
         <Box className="d-flex">

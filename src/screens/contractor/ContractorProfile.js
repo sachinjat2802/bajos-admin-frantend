@@ -1,16 +1,14 @@
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
-import Paper from "@mui/material/Paper";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import { Checkbox } from "@mui/material";
 import SideNav from "../../components/SideNav";
-import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 const ContractorProfile = () => {
   const bg = "#74C3AD";
-  const [editContractorData, setEditContractorData] = useState([]);
+  // const [editContractorData, setEditContractorData] = useState([]);
 
 
   return (

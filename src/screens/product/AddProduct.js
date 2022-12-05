@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box } from "@mui/system";
 import React, { useState, useEffect, useRef } from "react";
 import Img1 from "../../assets/bubble.png";
@@ -28,11 +29,13 @@ const AddProduct = () => {
   const [addProductToManufacturing, setAddProductToManufacturing] = useState({
     contractor: "",
     product: "",
-    labour_cost_per_pcs: "",
-    cur_date: "",
-    raw_id: "",
+    quantity:"", 
+    note:"",
+    pricePerUnit:""
   });
   const [productOpen, setProductOpen] = useState(false);
+  const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
+  const [error, setError] = useState("")
   const [prodId, setProId] = useState("");
   const [rawMaterial, setRawMaterial] = useState([]);
   const [productNumId, setNumId] = useState("");
@@ -49,10 +52,20 @@ const AddProduct = () => {
   useEffect(() => {
     getProducts();
     getContractorData();
+    getRawMaterialAssignedToContractors()
+
   }, []);
 
+  const getRawMaterialAssignedToContractors = async (ProductId) =>{
+    await axiousConfig.get(`/getRawMaterialAssignedToAllContracters`)
+    .then(res=>{
+      console.log(res.data.data)
+        setRawMaterialAssignedToContractors(res.data.data)
+    })
+    .catch(err=>setError(err.response.data.message))
+}
   const getProducts = () => {
-    axiousConfig.get(`/getAllProduct`)
+    axiousConfig.get(`/getAllRawMaterial`)
     .then((res) => {
       setProducts(res.data.data.list);
     });
@@ -63,13 +76,12 @@ const AddProduct = () => {
     const el = e.target.childNodes[index];
     const pro_id = el.getAttribute("id");
     console.log(pro_id);
-    const res = await axiousConfig.get(`/product/${pro_id}`);
-    console.log(res.data);
-    setProductIdData(res.data);
-    setProId(pro_id);
-    //setTimeout(getRawArray(), 5000)
-    getRawArray(res.data);
-    // console.log(productIdData.rm)
+    addProductToManufacturing.product=pro_id
+    setAddProductToManufacturing({
+      ...addProductToManufacturing,
+      [name]: value,
+    });
+
   };
 
   const getRawArray = async (productIdData) => {
@@ -81,7 +93,7 @@ const AddProduct = () => {
         `/rawMaterial/${productIdData?.raw[i].rm}`
       );
       //  console.log(res.data)
-      if (res.data["rawid"] == undefined) {
+      if (res.data["rawid"] === undefined) {
         res.data["rawid"] = productIdData?.raw[i].rm;
       }
       storeraw.push(res.data);
@@ -98,21 +110,20 @@ const AddProduct = () => {
 
   let name, value;
   const handleAddProductToManufacturing = (e) => {
+    
+    const index = e.target.selectedIndex;
+    const el = e.target.childNodes[index];
+    const  id= el.getAttribute("id");
+
     name = e.target.name;
     value = e.target.value;
-    let newDate = new Date();
-    let year = newDate.getFullYear();
-    let month = newDate.getMonth() + 1;
-    let d = newDate.getDate();
-    let todayDate = d + "." + month + "." + year;
-
-    addProductToManufacturing.cur_date = todayDate;
+   addProductToManufacturing.contractor=id
     setAddProductToManufacturing({
       ...addProductToManufacturing,
       [name]: value,
     });
 
-    if (name == "product") {
+    if (name === "product") {
       getRawMaterial();
     }
 
@@ -134,27 +145,20 @@ const AddProduct = () => {
     //   });
   };
   const handleAddToManufacture = () => {
-    const { contractor, product, labour_cost_per_pcs, cur_date, raw_id } =
+    console.log(addProductToManufacturing)
+    const { contractor, product, quantity, note, pricePerUnit } =
       addProductToManufacturing;
     axiousConfig
-      .post("/addProductToManufacturing", {
+      .put( `/assignRawMaterialToContractor/${contractor}`, {
         contractor: contractor,
-        product: productIdData.name,
-        labour_cost_per_pcs: labour_cost_per_pcs,
-        cur_date: cur_date,
-        raw_id: prodId,
+        "rawMaterial":product,
+        "quantity": quantity,
+        "note":note,
+        "pricePerUnit":pricePerUnit
       })
       .then((res) => {
         // console.log(res.data);
       }); 
-     axiousConfig.post(`/addProductToManufacture/${prodId}`, {
-      "rawMaterial": raw_id,
-      "quantity": 0.01,
-      "note":"xyz"
-      })
-      .then((res) => {
-        setProductOpen(true);
-      });
 
     // const selectedProduct = products.find((item) => item.id == prodId);
     // console.log(selectedProduct); 
@@ -182,6 +186,13 @@ const AddProduct = () => {
       setRawMaterial(res.data);
     });
   };
+  const handleNewProduct = (e) => {
+        name = e.target.name;
+        value = e.target.value;
+
+
+        setAddProductToManufacturing({ ...addProductToManufacturing, [name]: value });
+  }
 
   const handleQuantitiyInMetere = (e, id) => {
     value = e.target.value;
@@ -194,7 +205,10 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
+    getRawMaterialAssignedToContractors()
+
     const timeId = setTimeout(() => {
+
       setProductOpen(false);
     }, 5000);
 
@@ -211,6 +225,94 @@ const AddProduct = () => {
    
     handleraw();
   };
+  function createData(date, qty, name, note, sku) {
+    return { date, qty, name, note, sku };
+}
+  const rows = [
+    createData('12-10-15', 159, "Something something", 'John doe', 123),
+    createData('12-15-15', 237, "Lorem ispum", "Someone", 123),
+    createData('10-8-22', 262, "Virat Kohli", "XD XD XD", 123),
+    createData('8-12-12', 305, "sachin endulat", "Sheetal", 123),
+    createData('12-2-24', 356, "Donald Trump", "Siddharth", 123),
+
+];
+
+  const columns3 = [
+    { id: 'date', label: 'Date', minWidth: 170 },
+    { id: 'contractor', label: 'Contractor', minWidth: 170 },
+    { id: 'rawMaterial', label: 'RawMaterial', minWidth: 150 },
+    { id: 'quantity', label: 'quantity', minWidth: 170 },
+    { id: 'pricePerUnit', label: 'Price per unit', minWidth: 150 },
+
+
+    
+];
+
+  function BasicTable3({RawMaterialAssignedToContractors}) {
+
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    return (
+        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            {columns3.map((column) => (
+                                <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ minWidth: column.minWidth }}
+                                >
+                                    {column.label}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {RawMaterialAssignedToContractors
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => {
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        {columns3.map((column) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                    {column.format && typeof value === 'number'
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </Paper>
+    );
+}
 
   return (
     <Box className="d-flex">
@@ -230,20 +332,20 @@ const AddProduct = () => {
           type={"text"}
           style={{ width: "100%" }}
           className="global-input-2"
-          name="contractor"
+          id="contractor"
           onChange={handleAddProductToManufacturing}
-          value={addProductToManufacturing.name}
+          value={addProductToManufacturing.id}
         >
           <option selected>Select Contractor from list</option>
           {contractors.map((item) => {
-            return <option>{item.name}</option>;
+            return <option id={item.id}>{item.name}</option>;
           })}
         </select>
         <select
           type={"text"}
           style={{ width: "100%" }}
           className="global-input-2"
-          name="product"
+          id="product"
           onChange={handleProductId}
         >
           <option selected>Select raw Material from list</option>
@@ -251,96 +353,35 @@ const AddProduct = () => {
             return <option id={item.id}>{item.name}</option>;
           })}
         </select>
-        <br />
-        <br />
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Rmku</TableCell>
-                <TableCell align="center">Raw Material Name</TableCell>
-                <TableCell align="center">Availabe Quantity</TableCell>
-                <TableCell align="center">Quantity to Assign</TableCell>
-                <TableCell align="center">Price per meter</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {/* {console.log(storeRaw)} */}
-              {storeRaw?.map((row) => (
-                <TableRow
-                  key={row.rawid}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.rmku}
-                  </TableCell>
-                  <TableCell align="center">{row.name}</TableCell>
-                  <TableCell align="center">
-                    {" "}
-                    <input
-                      type={"number"}
-                      style={{ maxWidth: 300, minWidth: 300, maxHeight: 50 }}
-                      className="global-input-2"
-                      name="qty_in_meter"
-                      onChange={(e) => handleQuantitiyInMetere(e, row.rawid)}
-                      value={setQtyInMeter[row.rawid]}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    {" "}
-                    <input
-                      type={"number"}
-                      style={{ maxWidth: 300, minWidth: 300, maxHeight: 50 }}
-                      className="global-input-2"
-                      name="price_per_pcs"
-                      onChange={(e) => handlePricePerMeter(e, row.rawid)}
-                      value={setPricePerMeter[row.rawid]}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <input
+            type={"number"}
+            style={{ width: "15%" }}
+            className="global-input-2"
+            placeholder="Qty"
+            name="quantity"
+            onChange={handleNewProduct}
+            value={addProductToManufacturing.quantity} />
+        <input
+            type={"number"}
+            style={{ width: "15%" }}
+            className="global-input-2"
+            placeholder="PricePerUnit"
+            name="pricePerUnit"
+            onChange={handleNewProduct}
+            value={addProductToManufacturing.pricePerUnit} />
+      <input
+            type={"text"}
+            style={{ width: "70%" }}
+            className="global-input-2"
+            placeholder="note"
+            name="note"
+            onChange={handleNewProduct}
+            value={addProductToManufacturing.note} />
+
         <br />
         <br />
-        <Box className="d-flex justify-content-between align-items-center">
-          <div
-            style={{
-              border: `1px solid ${bg}`,
-              padding: 12,
-              borderRadius: 6,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                color: "#219653",
-                borderRight: "1px solid #000",
-                paddingRight: 14,
-                fontSize: 19,
-              }}
-            >
-              Labour Cost per pcs
-            </div>
-            <div style={{ paddingLeft: 14 }}>
-              <input
-                type={"number"}
-                className="input-cost"
-                placeholder="00.00"
-                style={{ width: 100 }}
-                name="labour_cost_per_pcs"
-                onChange={handleAddProductToManufacturing}
-                value={addProductToManufacturing.name}
-              />
-            </div>
-            <div style={{ color: "#219653", paddingRight: 14, fontSize: 19 }}>
-              INR
-            </div>
-          </div>
-          <div>
+        <div align="right">
             <button
               className="btn my-4"
               style={{
@@ -356,12 +397,13 @@ const AddProduct = () => {
               Assign
             </button>
           </div>
-          {productOpen && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="info">Added product to manufacturing!!</Alert>
-            </Stack>
-          )}
-        </Box>
+
+      
+        <br />
+        <br />
+        <Paper elevation={2}>
+                <BasicTable3 RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
+                </Paper>
       </Box>
     </Box>
   );

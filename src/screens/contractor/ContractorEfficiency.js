@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Fab } from "@mui/material";
-import Img2 from "../../assets/left-arrow.png";
+// import Img2 from "../../assets/left-arrow.png";
 import Paper from "@mui/material/Paper";
 import { Box } from "@mui/system";
 import SideNav from "../../components/SideNav";
-import { Line,Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
 
 const ContractorEfficiency = () => {
-  const bg = "#74C3AD";
+ // const bg = "#74C3AD";
   Chart.register(...registerables);
   const [contractors, setContractors] = useState([]);
   const [expectedProduct, setExpectedProduct] = useState([]);
   const productRatio = [];
   const cname = [];
-  const per = [0, 25, 50, 75, 100];
+  //const per = [0, 25, 50, 75, 100];
 
-  const labels = contractors?.map((item) => item.name);
-  const dataval = productRatio?.map((item) => item.ratio);
-  const chartData = {
-    Labels: labels,
-    datasets: [
-      {
-        data: dataval,
-      },
-    ],
-  };
+  // const labels = contractors?.map((item) => item.name);
+  // const dataval = productRatio?.map((item) => item.ratio);
+  // const chartData = {
+  //   Labels: labels,
+  //   datasets: [
+  //     {
+  //       data: dataval,
+  //     },
+  //   ],
+  // };
   useEffect(() => {
     getContractorData();
     getExpectedProducts();
@@ -44,12 +44,12 @@ const ContractorEfficiency = () => {
     });
   };
   //console.log(expectedProduct)
-  for (var i = 0; i < expectedProduct.length; i++) {
-    var ratio = (Number(expectedProduct[i].recieved_product) / 100) * 100;
+  for (let i = 0; i < expectedProduct.length; i++) {
+    let ratio = (Number(expectedProduct[i].recieved_product) / 100) * 100;
     productRatio.push(ratio);
   }
 
-  for (var i = 0; i < contractors.length; i++) {
+  for (let i = 0; i < contractors.length; i++) {
     cname.push(contractors[i].name);
   }
 
@@ -72,7 +72,7 @@ const ContractorEfficiency = () => {
 
           <div style={{ position: "fixed", right: 30, bottom: 30 }}>
             <Fab style={{ background: "#74C3AD" }} aria-label="edit">
-              <img src={Img2} style={{ width: 38 }} />
+              {/* <img src={Img2} style={{ width: 38 }} /> */}
             </Fab>
           </div>
         </Box>

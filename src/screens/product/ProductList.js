@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable no-unused-vars */
 import { Box } from '@mui/system'
 import React, { useState, useEffect } from 'react'
 import Img1 from '../../assets/bubble.png'

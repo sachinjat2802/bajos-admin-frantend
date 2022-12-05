@@ -1,7 +1,7 @@
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
+//import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import SideNav from "../../components/SideNav";
 import { Button, TextareaAutosize, TextField, Typography } from "@mui/material";
@@ -13,7 +13,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import axios from "axios";
+//import axios from "axios";
 import { useParams } from "react-router-dom";
 
 
@@ -36,7 +36,7 @@ const ProductDetails = () => {
    
     const [open, setOpen] = React.useState(false);
     const [product, setProduct] = useState({})
-    const [error, setError] = useState("")
+    const [ setError] = useState("")
     const {id} = useParams();
     const [AddProductQty, setAddProductQty] = useState({    
         id:id,
@@ -45,25 +45,50 @@ const ProductDetails = () => {
     })
     const [RawMaterialList, setRawMaterialList] = useState([])
     const [RawMaterialQty, setRawMaterialQty] = useState([])
+    const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
+    const [AllProductsRecieved,setAllProductsRecieved]=useState([])
+
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     useEffect(() => {
         getProductsByID(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
 
     useEffect(() => {
         const tempRawMaterial = []
         const tempRawMaterialQty = []
         if(product){
+            // eslint-disable-next-line array-callback-return
             product?.contains?.map(rawMaterial=>{
                 tempRawMaterial.push(rawMaterial['rm'])
                 tempRawMaterialQty.push(rawMaterial['qty'])
             });
             setRawMaterialList(tempRawMaterial)
             setRawMaterialQty(tempRawMaterialQty)
+            getRawMaterialAssignedToContractors()
+            getAllProductsRecieved()
+
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product])
     
+    const getRawMaterialAssignedToContractors = async (ProductId) =>{
+        await axiousConfig.get(`/getRawMaterialAssignedToAllContracters`)
+        .then(res=>{
+            setRawMaterialAssignedToContractors(res.data.data)
+        })
+        .catch(err=>setError(err.response.data.message))
+    }
+    const getAllProductsRecieved = async (ProductId) =>{
+        await axiousConfig.get(`/getAllProductsRecieved`)
+        .then(res=>{
+            setAllProductsRecieved(res.data.data)
+        })
+        .catch(err=>setError(err.response.data.message))
+    }
+
     const getProductsByID = async (ProductId) =>{
         await axiousConfig.get(`/getProductById/?id=${ProductId}`)
         .then(res=>{
@@ -89,6 +114,8 @@ const ProductDetails = () => {
         if(response.statusCode===200)
         {
             getProductsByID(id)
+            getRawMaterialAssignedToContractors()
+            getAllProductsRecieved()
             // getProductLog()
         }
     }
@@ -151,7 +178,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3">
+                    <div className="py-3 bg-light">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -162,7 +189,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3 bg-light">
+                    <div className="py-3 ">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -173,7 +200,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3">
+                    <div className="py-3 bg-light">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -184,7 +211,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3 bg-light">
+                    <div className="py-3 ">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -195,7 +222,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3">
+                    <div className="py-3 py-3 bg-light">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -206,6 +233,7 @@ const ProductDetails = () => {
                                 <Button variant="contained" style={{ background: bg }} onClick={handleOpen}>
                                     Add Quantity
                                 </Button>
+                                
                                 <Modal
                                     open={open}
                                     aria-labelledby="modal-modal-title"
@@ -227,7 +255,7 @@ const ProductDetails = () => {
                                             aria-label="minimum height"
                                             minRows={3}
                                             placeholder="Additional note"
-                                            style={{ width: 200, width: '100%', padding: 12 }}
+                                            style={{ width: 200, padding: 12 }}
                                             name="note"
                                             onChange={handleChange}
                                         />
@@ -266,29 +294,17 @@ const ProductDetails = () => {
                         className="px-3 py-3 pt-4"
                         style={{ color: "#219653", fontSize: 22 }}
                     >
-                        Raw material to be received by contractor 
+                        Raw material assigned to contractor
+
                     </div>
                 </Paper>
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable3 />
+                <BasicTable3 RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
                 </Paper>
                 <br />
                 <br />
-                <Paper elevation={4}>
-                    <div
-                        className="px-3 py-3 pt-4"
-                        style={{ color: "#219653", fontSize: 22 }}
-                    >
-                        Raw material received by contractor 
-                    </div>
-                </Paper>
-                <br />
-                <br />
-                <Paper elevation={2}>
-                    <BasicTable />
-                </Paper>
                 <br />
                 <br />
                 <Paper elevation={4}>
@@ -302,7 +318,7 @@ const ProductDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable2 />
+                    <BasicTable2 AllProductsRecieved={AllProductsRecieved}/>
                 </Paper>
             </Box>
         </Box>
@@ -325,22 +341,7 @@ const rows = [
 ];
 
 
-const columns = [
-    { id: 'name', label: 'Raw material name', minWidth: 170 },
-    { id: 'date', label: 'Date', minWidth: 150 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
-    {
-        id: 'note',
-        label: 'Note',
-        minWidth: 200,
-        align: 'left',
-        format: (value) => value.toLocaleString('en-US'),
-    },
-];
 const columns2 = [
-    { id: 'name', label: 'Product name', minWidth: 170 },
-    { id: 'date', label: 'Date', minWidth: 170 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
     {
         id: 'sku',
         label: 'Sku',
@@ -348,93 +349,22 @@ const columns2 = [
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
     },
-    {
-        id: 'note',
-        label: 'Note',
-        minWidth: 200,
-        align: 'left',
-        format: (value) => value.toLocaleString('en-US'),
-    },
+    { id: 'productName', label: 'Name', minWidth: 170 },
+    { id: 'date', label: 'Date', minWidth: 170 },
+    { id: 'quentity', label: 'Quantity', minWidth: 150 },
+   
 ];
 const columns3 = [
-    { id: 'name', label: 'Raw Material name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 170 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
-    {
-        id: 'note',
-        label: 'Note',
-        minWidth: 200,
-        align: 'left',
-        format: (value) => value.toLocaleString('en-US'),
-    },
+    { id: 'contractor', label: 'Contractor', minWidth: 170 },
+    { id: 'rawMaterial', label: 'RawMaterial', minWidth: 150 },
+    { id: 'pricePerUnit', label: 'Price per unit', minWidth: 150 },
+
+
+    
 ];
 
 
-function BasicTable() {
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.format && typeof value === 'number'
-                                                        ? column.format(value)
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Paper>
-    );
-}
 
 
 
@@ -443,7 +373,7 @@ function BasicTable() {
 
 
 
-function BasicTable2() {
+function BasicTable2({AllProductsRecieved}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -475,7 +405,7 @@ function BasicTable2() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
+                        {AllProductsRecieved
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
@@ -511,7 +441,7 @@ function BasicTable2() {
 
 
 
-function BasicTable3() {
+function BasicTable3({RawMaterialAssignedToContractors}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -543,7 +473,7 @@ function BasicTable3() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
+                        {RawMaterialAssignedToContractors
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (

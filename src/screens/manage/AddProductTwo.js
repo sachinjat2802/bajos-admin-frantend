@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,14 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SideNav from "../../components/SideNav";
 import axios from "axios";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import { Button } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
@@ -46,22 +39,22 @@ const AddProductTwo = () => {
 
     // dynamic sizes corresponding to different catgoriyes
     const Category = {
-        'Doormat': ["13×21 inches", "16×24 inches","22×55 inches","2×4 ft","3×5 ft","4×6 ft","5×7 ft","6×9 ft"],
-        'Cushion covers': ['16*16 inches' ,'12*12 inches' , '24*24 inches', '18*18 inches','20*20 inches', '12*18 inches'],
-        'Sofa covers': ["10 sitter","16sitter","40 sitter","50 sitter"],
+        'Doormat': ["13×21 inches", "16×24 inches", "22×55 inches", "2×4 ft", "3×5 ft", "4×6 ft", "5×7 ft", "6×9 ft"],
+        'Cushion covers': ['16*16 inches', '12*12 inches', '24*24 inches', '18*18 inches', '20*20 inches', '12*18 inches'],
+        'Sofa covers': ["10 sitter", "16sitter", "40 sitter", "50 sitter"],
         'Curtains': ["meters", "Pcs"],
-        'Bedsheets' : ["90*90 cms","60*90 cms" ,"90*100 cms", "90*120 cms", "110*110 cms", "100*108 cms","108*108 cms","109*120 cms", "100*120 cms","120 *120 cms"] ,
-        'Bed covers' : ["1 plus 2 plus 2","1 plus 2 plus 3"], 
-        'Diwan sets' : ["1 plus 2 plus 3","1 plus 2 plus 5"],
-        'Fridge tops' : ["Pcs"],
-        'Table covers' : ["40×60 cm","60×90 cm","54*78 cm"],
-        'Dining table mat' :  ["Pcs"],
-
-    }
+        'Bedsheets': ["90*90 cms", "60*90 cms", "90*100 cms", "90*120 cms", "110*110 cms", "100*108 cms", "108*108 cms", "109*120 cms", "100*120 cms", "120 *120 cms"],
+        'Bed covers': ["1 plus 2 plus 2", "1 plus 2 plus 3"],
+        'Diwan sets': ["1 plus 2 plus 3", "1 plus 2 plus 5"],
+        'Fridge tops': ["Pcs"],
+        'Table covers': ["40×60 cm", "60×90 cm", "54*78 cm"],
+        'Dining table mat': ["Pcs"],
+    };
 
     const [rawMaterial, setRawMaterial] = useState([]);
     const [rawOpen, setRawOpen] = useState(false);
     const [productOpen, setProductOpen] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [product, setProduct] = useState([]);
 
     useEffect(() => {
@@ -70,21 +63,22 @@ const AddProductTwo = () => {
     }, []);
     const getRawMaterial = () => {
         axiousConfig.get("/getAllRawMaterial")
-                .then((res) => {
-                        setRawMaterial(res.data.data.list);
-                });
+            .then((res) => {
+                setRawMaterial(res.data.data.list);
+            });
     };
 
     const getProducts = () => {
         axiousConfig.get("/getAllProduct")
-        .then((res) => {
-            console.log(res.data.data.list)
-            setProduct(res.data.data.list);
-        });
+            .then((res) => {
+                console.log(res.data.data.list);
+                setProduct(res.data.data.list);
+            });
     };
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
+    // eslint-disable-next-line no-unused-vars
     const MenuProps = {
         PaperProps: {
             style: {
@@ -97,7 +91,9 @@ const AddProductTwo = () => {
     // const [rawMat, setRawMat] = useState("");
     // const [quantity, setQuantity] = useState("");
     const [error, setError] = useState("");
+    // eslint-disable-next-line no-unused-vars
     const [personName, setPersonName] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [qty, setQty] = useState("");
     const [form, setForm] = useState([
         {
@@ -114,6 +110,7 @@ const AddProductTwo = () => {
     };
     let name, value;
 
+    // eslint-disable-next-line no-unused-vars
     const handleRawMaterial = (e) => {
         name = e.target.name;
         value = e.target.value;
@@ -139,14 +136,16 @@ const AddProductTwo = () => {
         //  console.log(newProduct)
     };
 
+    // eslint-disable-next-line no-unused-vars
     const postRawMaterial = () => {
+        // eslint-disable-next-line no-unused-vars
         const { name, sr, rmku, messure_unit } = rawMaterialData;
-            axiousConfig.post("/addRawMaterial", {
-                name: name,
-                sr: rawMaterial.length + 1,
-                rmku: rmku,
-                messure_unit: messure_unit,
-            })
+        axiousConfig.post("/addRawMaterial", {
+            name: name,
+            sr: rawMaterial.length + 1,
+            rmku: rmku,
+            messure_unit: messure_unit,
+        })
             .then((res) => {
                 setRawOpen(true);
                 window.location.reload(true);
@@ -163,27 +162,27 @@ const AddProductTwo = () => {
         return () => {
             clearTimeout(timeId);
         };
-    }, [rawOpen, productOpen,error]);
+    }, [rawOpen, productOpen, error]);
 
-    const [addDiv, setAddDiv] = useState([]);
-    const [rawMaterialInput, setRawMaterialInput] = useState([]);
-    const [rawQuantity, setRawQuantity] = useState([]);
+    // const [addDiv, setAddDiv] = useState([]);
+    // const [rawMaterialInput, setRawMaterialInput] = useState([]);
+    // const [rawQuantity, setRawQuantity] = useState([]);
 
     // console.log(rawMaterialInput);
     const postNewProduct = () => {
-        const { name, sr, sku, category, raw , color,size, availableQty } = newProduct;
+        const { name, sr, sku, category, raw, color, size, availableQty } = newProduct;
         // console.log(form,newProduct)
         axiousConfig.post("/addProduct", {
-                name: name,
-                // sr: product.length + 1,
-                sku: sku,
-                category: category,
-                raw: form,
-                // contains:""
-                colour: color,
-                size: size,
-                availableQty: availableQty,
-            })
+            name: name,
+            // sr: product.length + 1,
+            sku: sku,
+            category: category,
+            raw: form,
+            // contains:""
+            colour: color,
+            size: size,
+            availableQty: availableQty,
+        })
             .then((res) => {
                 setProductOpen(true);
                 setNewProduct({
@@ -194,28 +193,12 @@ const AddProductTwo = () => {
                     colour: "",
                     size: "",
                     availableQty: "",
-                })
+                });
             })
-            .catch(err=>setError(err.response.data.message));
+            .catch(err => setError(err.response.data.message));
     };
 
-    // useEffect(() => {
-    //   if (rawMaterial.length > 0 && addDiv.length === 0) {
-    //     setAddDiv(
-    //       addDiv.concat(
-    //         <Input
-    //           setRawMateriaInput={setRawMaterialInput}
-    //           rawMaterialInput={rawMaterialInput}
-    //           rawQuantity={rawQuantity}
-    //           setRawQuantity={setRawQuantity}
-    //           rawMaterial={rawMaterial}
-    //           key={addDiv.length}
-    //         />
-    //       )
-    //     );
-    //   }
-    // }, [rawMaterial]);
-
+  
     const handleAddDiv = () => {
         let obj = {
             rm: "",
@@ -228,99 +211,7 @@ const AddProductTwo = () => {
         data.splice(index, 1);
         setForm(data);
     };
-    //const Input = ({ key }) => {
-    //return (
-    // <Box className="d-flex justify-content-between">
-    //   <select
-    //     type={"text"}
-    //     style={{ maxwidth: 400, minWidth: 400 }}
-    //     className="global-input-2"
-    //     name="rm"
-    //     onChange={(e) => {
-    //       const _data = [...rawMaterialInput];
-    //       _data[key] = e.target.value;
-    //       setRawMaterialInput(_data);
-    //     }}
-    //     value={rawMaterialInput[key]}
-    //   >
-    //     <option selected>Select Raw Material</option>
-    //     {console.log(rawMaterial)}
-    //     {rawMaterial?.map((r) => {
-    //       return <option>{r.name}</option>;
-    //     })}
-    //   </select>
-
-    //   <input
-    //     type={"number"}
-    //     style={{ maxWidth: 300, minWidth: 300 }}
-    //     className="global-input-2"
-    //     placeholder="Used Qty in Meter"
-    //     name="qty"
-    //     onChange={(e) => {
-    //       const _data = [...rawQuantity];
-    //       _data[key] = e.target.value;
-    //       setRawQuantity(_data);
-    //     }}
-    //     value={rawQuantity[key]}
-    //   />
-    // </Box>
-    //     <Box className="d-flex justify-content-between">
-    //       <FormControl
-    //         sx={{
-    //           m: 1.5,
-    //           width: 400,
-    //           height: 50,
-    //           border: "1px solid #045538",
-    //           borderRadius: 3,
-    //           paddingBottom: 7,
-    //         }}
-    //       >
-    //         <InputLabel
-    //           id="demo-multiple-checkbox-label"
-    //           sx={{
-    //             color: "black",
-    //             fontSize: 24,
-    //             paddingTop: -2,
-    //             "& .css-1lupbjb-MuiFormLabel-root-MuiInputLabel-root": {
-    //               transition: "none",
-    //               fontFamily: "Poppins, sans-serif",
-    //             },
-    //           }}
-    //         >
-    //           Select Raw Material
-    //         </InputLabel>
-    //         <Select
-    //           labelId="demo-multiple-checkbox-label"
-    //           id="demo-multiple-checkbox"
-    //           // multiple
-    //           value={personName}
-    //           onChange={handleChange}
-    //           input={<OutlinedInput label="Select Raw Material" />}
-    //           renderValue={(selected) => selected}
-    //           MenuProps={MenuProps}
-    //           name="rm"
-    //         >
-    //           {rawMaterial?.map((raw) => (
-    //             <MenuItem key={raw.name} value={raw.id}>
-    //               <Checkbox checked={personName.indexOf(raw.id) > -1} />
-    //               <ListItemText primary={raw.name} />
-    //             </MenuItem>
-    //           ))}
-    //         </Select>
-    //       </FormControl>
-    //       <input
-    //         type={"number"}
-    //         style={{ maxWidth: 300, minWidth: 300 }}
-    //         className="global-input-2"
-    //         placeholder="Used Qty in Meter"
-    //         name="qty"
-    //         onChange={handleNewProduct}
-    //         value={qty}
-    //       />
-    //     </Box>
-    //   );
-    // };
-    /* Productt */
+    
     return (
         <>
             <Box className="d-flex">
@@ -352,8 +243,7 @@ const AddProductTwo = () => {
                                         placeholder="Name"
                                         name="name"
                                         onChange={handleNewProduct}
-                                        value={newProduct.name}
-                                    />
+                                        value={newProduct.name} />
                                 </Box>
                                 <Box className="d-flex justify-content-between">
                                     <input
@@ -364,8 +254,7 @@ const AddProductTwo = () => {
                                         placeholder="Sr"
                                         name="sr"
                                         onChange={handleNewProduct}
-                                        value={newProduct.sr}
-                                    />
+                                        value={newProduct.sr} />
                                     <input
                                         type={"text"}
                                         style={{ maxWidth: 228, minWidth: 228 }}
@@ -373,8 +262,7 @@ const AddProductTwo = () => {
                                         placeholder="Sku"
                                         name="sku"
                                         onChange={handleNewProduct}
-                                        value={newProduct.sku}
-                                    />
+                                        value={newProduct.sku} />
                                     <select
                                         type={"text"}
                                         style={{ maxwidth: 400, minWidth: 400 }}
@@ -385,11 +273,9 @@ const AddProductTwo = () => {
                                         value={newProduct.category}
                                     >
                                         <option value='' selected>Select Category</option>
-                                        {Object.keys(Category).map(category=>{
-                                            return  <option>{category}</option>
-                                        })
-
-                                        }
+                                        {Object.keys(Category).map(category => {
+                                            return <option>{category}</option>;
+                                        })}
                                     </select>
                                 </Box>
                                 <Box className="d-flex justify-content-between">
@@ -400,24 +286,22 @@ const AddProductTwo = () => {
                                         name="availableQty"
                                         placeholder="Quantity avaialable"
                                         onChange={handleNewProduct}
-                                        value={newProduct.availableQty}
-                                    />
-                                     <select
-                                    type={"text"}
-                                    style={{ maxwidth: 270, minWidth: 300 }}
-                                    className="global-input-2"
-                                    name="size"
-                                    onChange={handleNewProduct}
-                                    value={newProduct.size}
-                                    required
-                                    // {!newProduct.category&&'Disabled'}
-                                    disabled={!newProduct.category}
+                                        value={newProduct.availableQty} />
+                                    <select
+                                        type={"text"}
+                                        style={{ maxwidth: 270, minWidth: 300 }}
+                                        className="global-input-2"
+                                        name="size"
+                                        onChange={handleNewProduct}
+                                        value={newProduct.size}
+                                        required
+                                        // {!newProduct.category&&'Disabled'}
+                                        disabled={!newProduct.category}
                                     >
                                         <option selected>Select Size</option>
-                                        {Category[newProduct.category]?.map(size=>{
-                                            return  <option>{size}</option>
-                                        })
-                                        }
+                                        {Category[newProduct.category]?.map(size => {
+                                            return <option>{size}</option>;
+                                        })}
                                     </select>
                                     <input
                                         type={"text"}
@@ -426,8 +310,7 @@ const AddProductTwo = () => {
                                         name="colour"
                                         placeholder="colour"
                                         onChange={handleNewProduct}
-                                        value={newProduct.colour}
-                                    />
+                                        value={newProduct.colour} />
                                 </Box>
                                 {form.map((item, index) => {
                                     return (
@@ -439,7 +322,7 @@ const AddProductTwo = () => {
                                                 name="rm"
                                                 onChange={(e) => {
                                                     handleChange(e, index);
-                                                }}
+                                                } }
                                                 value={item.rm}
                                             >
                                                 <option selected>Select Raw Material</option>
@@ -455,8 +338,7 @@ const AddProductTwo = () => {
                                                 placeholder="Used Qty in Meter"
                                                 name="qty"
                                                 onChange={(e) => handleChange(e, index)}
-                                                value={item.qty}
-                                            />
+                                                value={item.qty} />
 
                                             <button
                                                 className="btn"
@@ -536,7 +418,7 @@ const AddProductTwo = () => {
                                             </button>
                                         )}
                                         {/* {console.log(productOpen)} */}
-                                        
+
                                     </Box>
                                 </Box>
                             </Box>
@@ -606,7 +488,6 @@ function TableData() {
         rawMaterial.forEach((item) => {
             if (item.id === id) {
                 axios.delete(`/api/rawMaterial/${id}`).then((res) => {
-                    // console.log('deleted')
                     window.location.reload(true);
                 });
             }

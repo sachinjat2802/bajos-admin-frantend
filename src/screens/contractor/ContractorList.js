@@ -1,24 +1,24 @@
 import axiousConfig from '../../axiousConfig'
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
+// import Img1 from "../../assets/bubble.png";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
+// import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Fab } from "@mui/material";
-import Img2 from "../../assets/left-arrow.png";
+// import Img2 from "../../assets/left-arrow.png";
 import SideNav from "../../components/SideNav";
-import axios from "axios";
+// import axios from "axios";
 import { Button } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 
 const ContractorList = () => {
-  const bg = "#74C3AD";
+  // const bg = "#74C3AD";
 
 
 
@@ -40,7 +40,7 @@ const ContractorList = () => {
         <BasicTable />
         <div style={{ position: "fixed", right: 30, bottom: 30 }}>
           <Fab style={{ background: "#74C3AD" }} aria-label="edit">
-            <img src={Img2} style={{ width: 38 }} />
+            {/* <img src={Img2} style={{ width: 38 }} /> */}
           </Fab>
         </div>
       </Box>

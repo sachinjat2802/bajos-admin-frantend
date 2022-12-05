@@ -1,10 +1,8 @@
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
-import Img1 from "../../assets/bubble.png";
+import React, {  } from "react";
 import Paper from "@mui/material/Paper";
 import SideNav from "../../components/SideNav";
-import { Button, TextareaAutosize, TextField, Typography } from "@mui/material";
-import Modal from '@mui/material/Modal';
+import { Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,28 +10,27 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import axios from "axios";
 
 
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: '#fff',
-    border: '2px solid #fff',
-    boxShadow: 24,
-    p: 4,
-};
+// const style = {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     width: 400,
+//     bgcolor: '#fff',
+//     border: '2px solid #fff',
+//     boxShadow: 24,
+//     p: 4,
+// };
 
 
 const ContractorProfileDetails = () => {
-    const bg = "#74C3AD";
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+  //  const bg = "#74C3AD";
+   // const [ setOpen] = React.useState(false);
+    // const handleOpen = () => setOpen(true);
+    // const handleClose = () => setOpen(false);
 
     return (
         <Box className="d-flex">

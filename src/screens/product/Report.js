@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-unused-vars */
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
 import Img1 from "../../assets/bubble.png";
@@ -63,6 +65,7 @@ const Report = () => {
   });
   useEffect(() => {
     calculateExpectedPro();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productIdData]);
   const calculateExpectedPro = () => {
     var arr = [];
@@ -155,7 +158,7 @@ const Report = () => {
     report.cost_of_pcs = costPerPcs;
     report.raw_id = proId;
     // console.log(report)
-    if (Number(report.cost_of_pcs) > 0 && report.raw_id != "") {
+    if (Number(report.cost_of_pcs) > 0 && report.raw_id !== "") {
       axios.post("/api/addReport", report).then((res) => {
         console.log(res.data);
       });
@@ -228,6 +231,7 @@ const Report = () => {
     //     rem = Number(item.qty_in_meter) - Number(productIdData.qty);
     //   });
   };
+  // eslint-disable-next-line no-lone-blocks
   {
    // console.log(expectedProduct);
   }
