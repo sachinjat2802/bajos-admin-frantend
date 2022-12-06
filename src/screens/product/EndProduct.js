@@ -28,7 +28,8 @@ const EndProduct = () => {
   const [addProductToManufacturing, setAddProductToManufacturing] = useState({
     contractor: "",
     product: "",
-    labourCost:""
+    labourCost:"",
+    quantity:"",
   });
   const [productOpen, setProductOpen] = useState(false);
   const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
@@ -128,12 +129,13 @@ const EndProduct = () => {
  // };
   const handleAddToManufacture = () => {
     console.log(addProductToManufacturing)
-    const { contractor, product,labourCost} =
+    const { contractor, product,labourCost,quantity} =
       addProductToManufacturing;
     axiousConfig
       .post( `/recieveProduct/${product}`, {
         contractorId: contractor,
-        labourCost:labourCost    
+        labourCost:labourCost ,
+        quantity:quantity  
       })
       .then((res) => {
         // console.log(res.data);
@@ -204,7 +206,7 @@ const EndProduct = () => {
     { id: 'date', label: 'Date', minWidth: 170 },
     { id: 'productName', label: 'productName', minWidth: 170 },
     { id: 'quentity', label: 'Quentity', minWidth: 170 },
-    { id: 'price', label: 'PricePerPiece', minWidth: 170 },
+    { id: 'price', label: 'price', minWidth: 170 },
 ];
 
   function BasicTable3({RawMaterialAssignedToContractors}) {
@@ -312,6 +314,15 @@ const EndProduct = () => {
             return <option id={item.id}>{item.name}</option>;
           })}
         </select>
+        
+        <input
+            type={"number"}
+            style={{ width: "15%" }}
+            className="global-input-2"
+            placeholder="Qty"
+            name="quantity"
+            onChange={handleNewProduct}
+            value={addProductToManufacturing.quantity} />
 
         <Box className="d-flex justify-content-between align-items-center">
           <div
