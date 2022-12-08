@@ -33,7 +33,10 @@ const EndProduct = () => {
   });
   const [productOpen, setProductOpen] = useState(false);
   const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
-  const [ setError] = useState("")
+  const [error, setError] = useState({
+    code : null,
+    message : ""
+  })
  // const [prodId, setProId] = useState("");
   const [ setRawMaterial] = useState([]);
  
@@ -131,6 +134,7 @@ const EndProduct = () => {
     console.log(addProductToManufacturing)
     const { contractor, product,labourCost,quantity} =
       addProductToManufacturing;
+    setError({})
     axiousConfig
       .post( `/recieveProduct/${product}`, {
         contractorId: contractor,
@@ -139,6 +143,23 @@ const EndProduct = () => {
       })
       .then((res) => {
         // console.log(res.data);
+        setError({
+          code : res.data.statusCode,
+          message : res.data.message
+        })
+        getContractorData();
+        getRawMaterialAssignedToContractors()
+        setAddProductToManufacturing({
+          contractor: "",
+          product: "",
+          labourCost:"",
+          quantity:"",
+        })
+      }).catch(err=>{
+        setError({
+          code : err.response.data.status?err.response.data.status:err.response.data.statusCode,
+          message : err.response.data.message
+        }) 
       }); 
 
     // const selectedProduct = products.find((item) => item.id == prodId);
@@ -279,12 +300,17 @@ const EndProduct = () => {
     <Box className="d-flex">
       <SideNav />
       <Box className="p-5 w-100">
+      {error.code&&
+        <Alert className="m-2" severity={error.code==200?"success":"error"} onClose={()=>{setError({})}}>
+            {error.message}
+        </Alert>
+        }
         <Paper elevation={4}>
           <div
             className="px-3 py-3 pt-4"
             style={{ color: "#219653", fontSize: 22 }}
           >
-            Assign Raw Material to Contractor
+            Recieve Product from Contractor
           </div>
         </Paper>
         <br />
@@ -321,7 +347,12 @@ const EndProduct = () => {
             className="global-input-2"
             placeholder="Qty"
             name="quantity"
-            onChange={handleNewProduct}
+            onChange={(e)=>{
+              if(e.target.value<0){
+                e.target.value = 0
+              } 
+              handleNewProduct(e)
+            }}
             value={addProductToManufacturing.quantity} />
 
         <Box className="d-flex justify-content-between align-items-center">
@@ -351,7 +382,12 @@ const EndProduct = () => {
                 placeholder="00.00"
                 style={{ width: 100 }}
                 name="labourCost"
-                onChange={handleNewProduct}
+                onChange={(e)=>{
+                  if(e.target.value<0){
+                    e.target.value = 0
+                  } 
+                  handleNewProduct(e)
+                }}
                 value={addProductToManufacturing.labourCost}
               />
             </div>
@@ -372,7 +408,7 @@ const EndProduct = () => {
               }}
               onClick={handleAddToManufacture}
             >
-              Assign
+              Recieve
             </button>
           </div>
           {productOpen && (

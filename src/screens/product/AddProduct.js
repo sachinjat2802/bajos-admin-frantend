@@ -35,7 +35,10 @@ const AddProduct = () => {
   });
   const [productOpen, setProductOpen] = useState(false);
   const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
-  const [error, setError] = useState("")
+  const [error, setError] = useState({
+    code : null,
+    message : ""
+  })
   const [prodId, setProId] = useState("");
   const [rawMaterial, setRawMaterial] = useState([]);
   const [productNumId, setNumId] = useState("");
@@ -148,6 +151,7 @@ const AddProduct = () => {
     console.log(addProductToManufacturing)
     const { contractor, product, quantity, note, pricePerUnit } =
       addProductToManufacturing;
+    setError({})
     axiousConfig
       .put( `/assignRawMaterialToContractor/${contractor}`, {
         contractor: contractor,
@@ -157,7 +161,24 @@ const AddProduct = () => {
         "pricePerUnit":pricePerUnit
       })
       .then((res) => {
-        // console.log(res.data);
+        setError({
+          code : res.data.statusCode,
+          message : res.data.message
+        })
+        getRawMaterialAssignedToContractors()
+        getContractorData()
+        setAddProductToManufacturing({
+          contractor: "",
+          product: "",
+          quantity:"", 
+          note:"",
+          pricePerUnit:""
+        })
+      }).catch((err)=>{
+        setError({
+          code : err.response.data.status?err.response.data.status:err.response.data.statusCode,
+          message : err.response.data.message
+        }) 
       }); 
 
     // const selectedProduct = products.find((item) => item.id == prodId);
@@ -189,7 +210,6 @@ const AddProduct = () => {
   const handleNewProduct = (e) => {
         name = e.target.name;
         value = e.target.value;
-
 
         setAddProductToManufacturing({ ...addProductToManufacturing, [name]: value });
   }
@@ -318,6 +338,11 @@ const AddProduct = () => {
     <Box className="d-flex">
       <SideNav />
       <Box className="p-5 w-100">
+        {error.code&&
+        <Alert className="m-2" severity={error.code==200?"success":"error"} onClose={()=>{setError({})}}>
+            {error.message}
+        </Alert>
+        }
         <Paper elevation={4}>
           <div
             className="px-3 py-3 pt-4"
@@ -360,7 +385,12 @@ const AddProduct = () => {
             className="global-input-2"
             placeholder="Qty"
             name="quantity"
-            onChange={handleNewProduct}
+            onChange={(e)=>{
+              if(e.target.value<0){
+                e.target.value = 0
+              } 
+              handleNewProduct(e)
+            }}
             value={addProductToManufacturing.quantity} />
         <input
             type={"number"}
@@ -368,7 +398,12 @@ const AddProduct = () => {
             className="global-input-2"
             placeholder="PricePerUnit"
             name="pricePerUnit"
-            onChange={handleNewProduct}
+            onChange={(e)=>{
+              if(e.target.value<0){
+                e.target.value = 0
+              } 
+              handleNewProduct(e)
+            }}
             value={addProductToManufacturing.pricePerUnit} />
       <input
             type={"text"}
