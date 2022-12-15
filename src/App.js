@@ -55,8 +55,8 @@ function App() {
         <Route path="/product/processing" element={<InFactory />} />
         <Route path="/product/end" element={<EndProduct />} />
         <Route path="/product/report" element={<Report />} />
-        <Route path="/product/unavailable" element={<UnavProduct />} />
-        <Route path="/product/export" element={<ExportExcel />} />
+        <Route path="/products/unavailable" element={<UnavProduct />} />
+        <Route path="/products/export" element={<ExportExcel />} />
         <Route path="/manage/raw/:id" element={<RawMaterial />} />
         <Route path="/contractor/profile/:id" element={<ContractorProfileDetails />} />
         <Route path="/manage/product/:id" element={<ProductDetails />} />

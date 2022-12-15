@@ -80,6 +80,7 @@ function BasicTable() {
             <TableCell>Sr</TableCell>
             <TableCell>Sku</TableCell>
             <TableCell>Name</TableCell>
+            <TableCell>Price</TableCell>
             <TableCell>Available Qty</TableCell>
             <TableCell>Category</TableCell>
             <TableCell>Raw Mat. List</TableCell>

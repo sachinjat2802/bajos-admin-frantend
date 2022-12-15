@@ -17,17 +17,19 @@ import Pressure from '../assets/pressure.png'
 import box from '../assets/box.png'
 import Report from '../assets/report.png'
 import Trash from '../assets/Trash.png'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SideNav = () => {
 
     const navigate = useNavigate();
+    const {pathname} = useLocation();
 
     const handleLogout = () => {
         localStorage.clear();
         navigate('/login')
     }
 
+    // console.log(location);
     const bg = "#74C3AD"
 
     return (
@@ -44,7 +46,7 @@ const SideNav = () => {
                     <div className="accordion" id="accordionExample">
                         <div className="accordion-item">
                             <h2 className="accordion-header" id="headingOne">
-                                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <button className={`accordion-button ${!pathname.includes('manage/')&&'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <ProductIcon />
@@ -53,7 +55,7 @@ const SideNav = () => {
                                     </div>
                                 </button>
                             </h2>
-                            <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div id="collapseOne" className={`accordion-collapse ${!pathname.includes('manage/')?'collapse':'collapse show'}`} aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div className="accordion-body">
                                     <div className='ms-5'
                                         onClick={() => navigate('/manage/raw/add')}
@@ -96,7 +98,7 @@ const SideNav = () => {
                         </div>
                         <div className="accordion-item">
                             <h2 className="accordion-header" id="headingTwo">
-                                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <button className={`accordion-button ${!pathname.includes('contractor/')&&'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <ContractorIcon />
@@ -105,7 +107,7 @@ const SideNav = () => {
                                     </div>
                                 </button>
                             </h2>
-                            <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div id="collapseTwo" className={`accordion-collapse ${!pathname.includes('contractor/')?'collapse':'collapse show'}`} aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                 <div className="accordion-body">
                                     <div className='ms-5'
                                         onClick={() => navigate('/contractor/add')}
@@ -148,7 +150,7 @@ const SideNav = () => {
                         </div>
                         <div className="accordion-item">
                             <h2 className="accordion-header" id="headingThree">
-                                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <button className={`accordion-button ${!pathname.includes('product/')&&'collapsed'}`}  type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <InProcessIcon />
@@ -157,7 +159,7 @@ const SideNav = () => {
                                     </div>
                                 </button>
                             </h2>
-                            <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                            <div id="collapseThree" className={`accordion-collapse ${!pathname.includes('product/')?'collapse':'collapse show'}`} aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                 <div className="accordion-body">
                                     <div className='ms-5'
                                         onClick={() => navigate('/product/add')}
@@ -200,7 +202,7 @@ const SideNav = () => {
                         </div>
                         <div className="accordion-item">
                             <h2 className="accordion-header" id="headingFour">
-                                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <button className={`accordion-button ${!pathname.includes('products/')&&'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <EndProductIcon />
@@ -209,10 +211,10 @@ const SideNav = () => {
                                     </div>
                                 </button>
                             </h2>
-                            <div id="collapseFour" className="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                            <div id="collapseFour" className={`accordion-collapse ${!pathname.includes('products/')?'collapse':'collapse show'}`} aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                                 <div className="accordion-body">
                                     <div className='ms-5'
-                                        onClick={() => navigate('/product/unavailable')}
+                                        onClick={() => navigate('/products/unavailable')}
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div className='d-flex align-items-center fs-6 mb-3'>
@@ -221,7 +223,7 @@ const SideNav = () => {
                                         </div>
                                     </div>
                                     <div className='ms-5'
-                                        onClick={() => navigate('/product/export')}
+                                        onClick={() => navigate('/products/export')}
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div className='d-flex align-items-center fs-6 mb-3'>

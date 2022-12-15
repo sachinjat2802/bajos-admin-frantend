@@ -72,16 +72,17 @@ function BasicTable() {
   };
 
   const handleContractorEdit = (id) => {
-    //  console.log(id)
-    for (var i = 0; i < contractors.length; i++) {
-      if (id === contractors[i].id) {
+     console.log(id)
+    // for (var i = 0; i < contractors.length; i++) {
+      // if (id === contractors[i].id) {
         // console.log(contractors[i])
-        const data = JSON.stringify(contractors[i]);
-        localStorage.setItem("contractor", data);
-        navigate('/contractor/profile');
-      }
-    }
+        // const data = JSON.stringify(contractors[i]);
+        // localStorage.setItem("contractor", data);
+        navigate('/contractor/profile/'+id);
+      // }
+    // }
 
+  }
     //const Id = JSON.stringify(id)
 
     // localStorage.setItem("id",Id);
@@ -91,7 +92,6 @@ function BasicTable() {
 
     //  })
 
-  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

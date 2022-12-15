@@ -16,8 +16,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
-import { useParams } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const style = {
@@ -36,6 +36,7 @@ const style = {
 const RawMaterial = () => {
     const bg = "#74C3AD";
     const { id } = useParams();
+    const navigate = useNavigate();
     const [error, setError] = useState("")
     const [rawMaterial, setRawMaterial] = useState({})
     const [RawMaterialLog, setRawMaterialLog] = useState([])
@@ -59,7 +60,7 @@ const RawMaterial = () => {
         await axiousConfig.get(`/getRawMaterialById/?id=${materialId}`)
         .then(res=>
             {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 setRawMaterial(res.data.data)
             })
         .catch(err=>setError(err.response.data.message))
@@ -68,16 +69,28 @@ const RawMaterial = () => {
     const getRawMaterialLog = async (materialId) => {
         await axiousConfig.get(`/rowMaterialLogByID?id=${materialId}`)
         .then(res=>{
-            console.log(res.data.data)
+            // console.log(res.data.data)
             setRawMaterialLog(res.data.data)
         })
         .catch(err=>console.log(err.response.data.message))
     }
 
+    const deleteRawMaterial = async (materialId) =>{
+        if(window.confirm("Are you sure , you want to delete Raw Material ?")){
+            await axiousConfig.delete(`/deleteRawMaterial?id=${materialId}`)
+            .then(res=>{
+                if(res.data.statusCode===200){
+                    navigate("/manage/raw")
+                }
+            })
+            .catch(err=>console.log(err.response.data.message))
+        }
+    }
+
     const getRawMaterialContracterById = async (materialId) => {
         await axiousConfig.get(`/getRawMaterialContracterById?id=${materialId}`)
         .then(res=>{
-            console.log(res.data.data)
+            // console.log(res.data.data)
             setRawMaterialContracterById(res.data.data)
         })
         .catch(err=>console.log(err.response.data.message))
@@ -89,16 +102,17 @@ const RawMaterial = () => {
         setAddRawMaterialQuantity({ ...addRawMaterialQuantity, [name]: value });
     };
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault();
         // console.log(addRawMaterialQuantity)
-        const response = axiousConfig.put("/addQuantity",addRawMaterialQuantity)
+        const response = await axiousConfig.put("/addQuantity",addRawMaterialQuantity)
         .then(res=>res.data)
         .catch(err=>err.response.data)
         handleClose()
+        // console.log(response)
         if(response.statusCode===200)
         {
-            console.log(response.data)
+            // console.log(response.data)
             getRawMaterial(id)
             getRawMaterialLog(id)
             getRawMaterialContracterById(id)
@@ -118,11 +132,22 @@ const RawMaterial = () => {
             :(        
             <Box className="p-5 w-100">
                 <Paper elevation={4}>
+                    <div className='d-flex justify-content-between mx-3'>
                     <div
                         className="px-3 py-3 pt-4"
                         style={{ color: "#219653", fontSize: 22 }}
                     >
                         {rawMaterial.name}
+                    </div>
+                    <Button 
+                        className="fs-6 m-3" 
+                        variant="contained"
+                        style={{ background: "#d90000" }}
+                        onClick = {()=>{deleteRawMaterial(rawMaterial._id)}}
+                    >
+                      <DeleteIcon /> 
+                      Delete
+                    </Button>
                     </div>
                 </Paper>
                 <br />

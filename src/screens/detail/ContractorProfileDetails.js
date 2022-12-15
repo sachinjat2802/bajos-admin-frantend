@@ -1,5 +1,5 @@
 import { Box } from "@mui/system";
-import React, {  } from "react";
+import React, { useState, useEffect }  from "react";
 import Paper from "@mui/material/Paper";
 import SideNav from "../../components/SideNav";
 import { Typography } from "@mui/material";
@@ -10,7 +10,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-
+import axiousConfig from '../../axiousConfig'
+import { useNavigate, useParams } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete'
 
 
 // const style = {
@@ -31,6 +33,71 @@ const ContractorProfileDetails = () => {
    // const [ setOpen] = React.useState(false);
     // const handleOpen = () => setOpen(true);
     // const handleClose = () => setOpen(false);
+
+    const navigate = useNavigate();
+    const [open, setOpen] = React.useState(false);
+    const [contractor, setContractor] = useState({})
+    const [error,setError] = useState({})
+    const { id } = useParams();
+    const [AddProductQty, setAddProductQty] = useState({
+        id: id,
+        quantity: 0,
+        note: ""
+    })
+    // const [RawMaterialList, setRawMaterialList] = useState([])
+    // const [RawMaterialQty, setRawMaterialQty] = useState([])
+    const [RawMaterialAssignedToContractors, setRawMaterialAssignedToContractors] = useState([])
+    const [AllProductsRecieved, setAllProductsRecieved] = useState([])
+
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    useEffect(() => {
+        getContractorByID(id)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id])
+
+    useEffect(() => {
+        // const tempRawMaterial = []
+        // const tempRawMaterialQty = []
+        if (contractor) {
+            // eslint-disable-next-line array-callback-return
+            // contractor?.contains?.map(rawMaterial=>{
+            //     tempRawMaterial.push(rawMaterial['rm'])
+            //     tempRawMaterialQty.push(rawMaterial['qty'])
+            // });
+            // setRawMaterialList(tempRawMaterial)
+            // setRawMaterialQty(tempRawMaterialQty)
+            getRawMaterialAssignedToContractors()
+            getAllProductsRecieved()
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [contractor])
+
+    const getRawMaterialAssignedToContractors = async (ProductId) => {
+        await axiousConfig.get(`/getRawMaterialAssignedToAllContracters`)
+            .then(res => {
+                setRawMaterialAssignedToContractors(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
+    }
+    const getAllProductsRecieved = async (ProductId) => {
+        await axiousConfig.get(`/getAllProductsRecieved`)
+            .then(res => {
+                setAllProductsRecieved(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
+    }
+
+    const getContractorByID = async (ProductId) => {
+        await axiousConfig.get(`/getContractorById/?id=${ProductId}`)
+            .then(res => {
+                console.log(res.data.data)
+                setContractor(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
+    }
 
     return (
         <Box className="d-flex">
@@ -53,7 +120,7 @@ const ContractorProfileDetails = () => {
                             >Full Name of contractor</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 400 }}
-                            >Siddharth Gupta</Typography>
+                            >{contractor.name}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -64,7 +131,7 @@ const ContractorProfileDetails = () => {
                             >Phone Number</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 400 }}
-                            >9999999999</Typography>
+                            >{contractor.phone}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -75,7 +142,7 @@ const ContractorProfileDetails = () => {
                             >Email Address</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 400 }}
-                            >someone@gmail.com</Typography>
+                            >{contractor.email}</Typography>
                         </div>
                     </div>
                     <hr className="m-0" />
@@ -97,7 +164,7 @@ const ContractorProfileDetails = () => {
                             >Personal Note about contractor</Typography>
                             <Typography variant="body"
                                 style={{ minWidth: 300 }}
-                            >Very hard working</Typography>
+                            >{contractor.note}</Typography>
                         </div>
                     </div>
                 </Paper>

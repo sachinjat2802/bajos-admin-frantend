@@ -14,7 +14,9 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 //import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete'
+import RawMaterial from './RawMaterial';
 
 
 
@@ -33,90 +35,101 @@ const style = {
 
 const ProductDetails = () => {
     const bg = "#74C3AD";
-   
+    const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const [product, setProduct] = useState({})
-    const [ setError] = useState("")
-    const {id} = useParams();
-    const [AddProductQty, setAddProductQty] = useState({    
-        id:id,
-        quantity:0,
-        note:""
+    const [setError] = useState("")
+    const { id } = useParams();
+    const [AddProductQty, setAddProductQty] = useState({
+        id: id,
+        quantity: 0,
+        note: ""
     })
-    const [RawMaterialList, setRawMaterialList] = useState([])
-    const [RawMaterialQty, setRawMaterialQty] = useState([])
-    const [RawMaterialAssignedToContractors,setRawMaterialAssignedToContractors]=useState([])
-    const [AllProductsRecieved,setAllProductsRecieved]=useState([])
+    // const [RawMaterialList, setRawMaterialList] = useState([])
+    // const [RawMaterialQty, setRawMaterialQty] = useState([])
+    const [RawMaterialAssignedToContractors, setRawMaterialAssignedToContractors] = useState([])
+    const [AllProductsRecieved, setAllProductsRecieved] = useState([])
 
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     useEffect(() => {
         getProductsByID(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
 
     useEffect(() => {
-        const tempRawMaterial = []
-        const tempRawMaterialQty = []
-        if(product){
+        // const tempRawMaterial = []
+        // const tempRawMaterialQty = []
+        if (product) {
             // eslint-disable-next-line array-callback-return
-            product?.contains?.map(rawMaterial=>{
-                tempRawMaterial.push(rawMaterial['rm'])
-                tempRawMaterialQty.push(rawMaterial['qty'])
-            });
-            setRawMaterialList(tempRawMaterial)
-            setRawMaterialQty(tempRawMaterialQty)
+            // product?.contains?.map(rawMaterial=>{
+            //     tempRawMaterial.push(rawMaterial['rm'])
+            //     tempRawMaterialQty.push(rawMaterial['qty'])
+            // });
+            // setRawMaterialList(tempRawMaterial)
+            // setRawMaterialQty(tempRawMaterialQty)
             getRawMaterialAssignedToContractors()
             getAllProductsRecieved()
 
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product])
-    
-    const getRawMaterialAssignedToContractors = async (ProductId) =>{
+
+    const getRawMaterialAssignedToContractors = async (ProductId) => {
         await axiousConfig.get(`/getRawMaterialAssignedToAllContracters`)
-        .then(res=>{
-            setRawMaterialAssignedToContractors(res.data.data)
-        })
-        .catch(err=>setError(err.response.data.message))
+            .then(res => {
+                setRawMaterialAssignedToContractors(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
     }
-    const getAllProductsRecieved = async (ProductId) =>{
+    const getAllProductsRecieved = async (ProductId) => {
         await axiousConfig.get(`/getAllProductsRecieved`)
-        .then(res=>{
-            setAllProductsRecieved(res.data.data)
-        })
-        .catch(err=>setError(err.response.data.message))
+            .then(res => {
+                setAllProductsRecieved(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
     }
 
-    const getProductsByID = async (ProductId) =>{
+    const getProductsByID = async (ProductId) => {
         await axiousConfig.get(`/getProductById/?id=${ProductId}`)
-        .then(res=>{
-            console.log(res.data.data)
-            setProduct(res.data.data)
-        })
-        .catch(err=>setError(err.response.data.message))
+            .then(res => {
+                console.log(res.data.data)
+                setProduct(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
     }
 
-    const handleChange = e =>{
+    const handleChange = e => {
         const name = e.target.name;
         const value = e.target.value;
-        setAddProductQty({...AddProductQty,[name]:value})
+        setAddProductQty({ ...AddProductQty, [name]: value })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await axiousConfig.put("/addProductQuantity",AddProductQty)
-        .then(res=>res.data)
-        .catch(err=>err.response.data)
+        const response = await axiousConfig.put("/addProductQuantity", AddProductQty)
+            .then(res => res.data)
+            .catch(err => err.response.data)
         handleClose()
         console.log(response)
-        if(response.statusCode===200)
-        {
+        if (response.statusCode === 200) {
             getProductsByID(id)
             getRawMaterialAssignedToContractors()
             getAllProductsRecieved()
             // getProductLog()
+        }
+    }
+
+    const deleteProduct = async (productId) => {
+        if (window.confirm("Are you sure , you want to delete Product ?")) {
+            await axiousConfig.delete(`/deleteProduct?id=${productId}`)
+                .then(res => {
+                    if (res.data.statusCode === 200) {
+                        navigate("/manage/product")
+                    }
+                })
+                .catch(err => console.log(err.response.data.message))
         }
     }
 
@@ -125,11 +138,22 @@ const ProductDetails = () => {
             <SideNav />
             <Box className="p-5 w-100">
                 <Paper elevation={4}>
-                    <div
-                        className="px-3 py-3 pt-4"
-                        style={{ color: "#219653", fontSize: 22 }}
-                    >
-                        Product
+                    <div className='d-flex justify-content-between mx-3'>
+                        <div
+                            className="px-3 py-3 pt-4"
+                            style={{ color: "#219653", fontSize: 22 }}
+                        >
+                            {product.name}
+                        </div>
+                        <Button
+                            className="fs-6 m-3"
+                            variant="contained"
+                            style={{ background: "#d90000" }}
+                            onClick={() => { deleteProduct(product._id) }}
+                        >
+                            <DeleteIcon />
+                            Delete
+                        </Button>
                     </div>
                 </Paper>
                 <br />
@@ -178,7 +202,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3 bg-light">
+                    <div className="py-3 ">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -189,7 +213,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3 ">
+                    <div className="py-3 bg-light">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
@@ -200,17 +224,36 @@ const ProductDetails = () => {
                         </div>
                     </div>
                     <hr className="m-0" />
-                    <div className="py-3 bg-light">
+                    <div className="py-3 ">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
                                 style={{ minWidth: 400 }}
-                            >Raw material list</Typography>
-                            <Typography variant="body"
-                                style={{ minWidth: 300 }}
-                            >{RawMaterialList.join(" , ")}</Typography>
+                            >Raw material list:</Typography>
+                        </div>
+                        <div className='w-50'>
+                            <TableContainer sx={{ maxHeight: 440}} className="bg-light" >
+                                <Table stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Raw Material</TableCell>
+                                            <TableCell>Raw Quantity</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {product.contains?.map(RawMaterial=>{
+                                            return (
+                                                <TableRow>
+                                                    <TableCell>{RawMaterial.rm}</TableCell>
+                                                    <TableCell>{RawMaterial.qty}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </div>
                     </div>
-                    <hr className="m-0" />
+                    {/* <hr className="m-0" />
                     <div className="py-3 ">
                         <div className="px-3 d-flex align-items-center">
                             <Typography variant="h6"
@@ -220,7 +263,7 @@ const ProductDetails = () => {
                                 style={{ minWidth: 300 }}
                             >{RawMaterialQty.join(" , ")}</Typography>
                         </div>
-                    </div>
+                    </div> */}
                     <hr className="m-0" />
                     <div className="py-3 py-3 bg-light">
                         <div className="px-3 d-flex align-items-center">
@@ -233,54 +276,54 @@ const ProductDetails = () => {
                                 <Button variant="contained" style={{ background: bg }} onClick={handleOpen}>
                                     Add Quantity
                                 </Button>
-                                
+
                                 <Modal
                                     open={open}
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
                                     <form onSubmit={handleSubmit}>
-                                    <Box sx={style}>
-                                        <Typography variant="h5" className="text-center">Add quantity</Typography>
-                                        <TextField 
-                                            id="outlined-basic" 
-                                            label="Quantity" 
-                                            variant="outlined"
-                                            className="w-100 my-4" 
-                                            name="quantity"
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                        <TextareaAutosize
-                                            aria-label="minimum height"
-                                            minRows={3}
-                                            placeholder="Additional note"
-                                            style={{ width: 200, padding: 12 }}
-                                            name="note"
-                                            onChange={handleChange}
-                                        />
+                                        <Box sx={style}>
+                                            <Typography variant="h5" className="text-center">Add quantity</Typography>
+                                            <TextField
+                                                id="outlined-basic"
+                                                label="Quantity"
+                                                variant="outlined"
+                                                className="w-100 my-4"
+                                                name="quantity"
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                            <TextareaAutosize
+                                                aria-label="minimum height"
+                                                minRows={3}
+                                                placeholder="Additional note"
+                                                style={{ width: 200, padding: 12 }}
+                                                name="note"
+                                                onChange={handleChange}
+                                            />
 
-                                        <br />
-                                        <br />
-                                        <div>
-                                            <Button 
-                                                className="w-50 fs-6" 
-                                                variant="text"
-                                                style={{ color: bg }}
-                                                onClick={handleClose}
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button 
-                                                className="w-50 fs-6" 
-                                                variant="contained"
-                                                style={{ background: bg }}
-                                                type="submit"
-                                            >
-                                                Add
-                                            </Button>
-                                        </div>
-                                    </Box>
+                                            <br />
+                                            <br />
+                                            <div>
+                                                <Button
+                                                    className="w-50 fs-6"
+                                                    variant="text"
+                                                    style={{ color: bg }}
+                                                    onClick={handleClose}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    className="w-50 fs-6"
+                                                    variant="contained"
+                                                    style={{ background: bg }}
+                                                    type="submit"
+                                                >
+                                                    Add
+                                                </Button>
+                                            </div>
+                                        </Box>
                                     </form>
                                 </Modal>
                             </Typography>
@@ -301,7 +344,7 @@ const ProductDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                <BasicTable3 RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
+                    <BasicTable3 RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
                 </Paper>
                 <br />
                 <br />
@@ -318,7 +361,7 @@ const ProductDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable2 AllProductsRecieved={AllProductsRecieved}/>
+                    <BasicTable2 AllProductsRecieved={AllProductsRecieved} />
                 </Paper>
             </Box>
         </Box>
@@ -352,16 +395,13 @@ const columns2 = [
     { id: 'productName', label: 'Name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 170 },
     { id: 'quentity', label: 'Quantity', minWidth: 150 },
-   
+
 ];
 const columns3 = [
     { id: 'date', label: 'Date', minWidth: 170 },
     { id: 'contractor', label: 'Contractor', minWidth: 170 },
     { id: 'rawMaterial', label: 'RawMaterial', minWidth: 150 },
     { id: 'pricePerUnit', label: 'Price per unit', minWidth: 150 },
-
-
-    
 ];
 
 
@@ -373,7 +413,8 @@ const columns3 = [
 
 
 
-function BasicTable2({AllProductsRecieved}) {
+
+function BasicTable2({ AllProductsRecieved }) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -441,7 +482,7 @@ function BasicTable2({AllProductsRecieved}) {
 
 
 
-function BasicTable3({RawMaterialAssignedToContractors}) {
+function BasicTable3({ RawMaterialAssignedToContractors }) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
