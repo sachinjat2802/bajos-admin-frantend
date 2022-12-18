@@ -46,9 +46,8 @@ const ContractorProfileDetails = () => {
     })
     // const [RawMaterialList, setRawMaterialList] = useState([])
     // const [RawMaterialQty, setRawMaterialQty] = useState([])
-    const [RawMaterialAssignedToContractors, setRawMaterialAssignedToContractors] = useState([])
     const [AllProductsRecieved, setAllProductsRecieved] = useState([])
-
+    const [RawMaterialAssignedToContractors, setRawMaterialAssignedToContractors] = useState([])
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -71,20 +70,23 @@ const ContractorProfileDetails = () => {
             getRawMaterialAssignedToContractors()
             getAllProductsRecieved()
 
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contractor])
 
     const getRawMaterialAssignedToContractors = async (ProductId) => {
-        await axiousConfig.get(`/getRawMaterialAssignedToAllContracters`)
+        await axiousConfig.get(`/getAllProduct`)
             .then(res => {
+                console.log(res.data.data)
                 setRawMaterialAssignedToContractors(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
     }
-    const getAllProductsRecieved = async (ProductId) => {
+    const getAllProductsRecieved = async () => {
         await axiousConfig.get(`/getAllProductsRecieved`)
             .then(res => {
+                // console.log(res.data.data)
                 setAllProductsRecieved(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
@@ -93,7 +95,7 @@ const ContractorProfileDetails = () => {
     const getContractorByID = async (ProductId) => {
         await axiousConfig.get(`/getContractorById/?id=${ProductId}`)
             .then(res => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 setContractor(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
@@ -181,7 +183,7 @@ const ContractorProfileDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable3 />
+                    <BasicTable3 assignRawMaterial={contractor.assignRawMaterial}/>
                 </Paper>
                 <br />
                 <br />
@@ -211,7 +213,9 @@ const ContractorProfileDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable2 />
+                    <BasicTable2
+                    AllProductsRecieved={AllProductsRecieved}
+                    />
                 </Paper>
             </Box>
         </Box>
@@ -247,9 +251,9 @@ const columns = [
     },
 ];
 const columns2 = [
-    { id: 'name', label: 'Product name', minWidth: 170 },
+    { id: 'productName', label: 'Product name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 170 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'quentity', label: 'Quantity', minWidth: 150 },
     {
         id: 'sku',
         label: 'Sku',
@@ -257,21 +261,21 @@ const columns2 = [
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
     },
-    {
-        id: 'note',
-        label: 'Note',
-        minWidth: 200,
-        align: 'left',
-        format: (value) => value.toLocaleString('en-US'),
-    },
+    // {
+    //     id: 'note',
+    //     label: 'Note',
+    //     minWidth: 200,
+    //     align: 'left',
+    //     format: (value) => value.toLocaleString('en-US'),
+    // },
 ];
 const columns3 = [
-    { id: 'name', label: 'Raw Material name', minWidth: 170 },
+    { id: 'rm', label: 'Raw Material name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 170 },
     { id: 'qty', label: 'Quantity', minWidth: 150 },
     {
-        id: 'note',
-        label: 'Note',
+        id: 'pricePerUnit',
+        label: 'Price Per Unit',
         minWidth: 200,
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
@@ -311,8 +315,7 @@ function BasicTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
@@ -352,11 +355,12 @@ function BasicTable() {
 
 
 
-function BasicTable2() {
+function BasicTable2({AllProductsRecieved}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+    
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -384,8 +388,7 @@ function BasicTable2() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {AllProductsRecieved?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
@@ -420,7 +423,7 @@ function BasicTable2() {
 
 
 
-function BasicTable3() {
+function BasicTable3({assignRawMaterial}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -452,8 +455,7 @@ function BasicTable3() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {assignRawMaterial?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
