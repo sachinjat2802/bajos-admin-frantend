@@ -48,6 +48,7 @@ const ContractorProfileDetails = () => {
     // const [RawMaterialQty, setRawMaterialQty] = useState([])
     const [AllProductsRecieved, setAllProductsRecieved] = useState([])
     const [RawMaterialAssignedToContractors, setRawMaterialAssignedToContractors] = useState([])
+    const [AllRawMaterialUsedByContracter, setAllRawMaterialUsedByContracter] = useState([])
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -69,25 +70,37 @@ const ContractorProfileDetails = () => {
             // setRawMaterialQty(tempRawMaterialQty)
             getAllProductsRecieved(id)
             getRawMaterialAssignedToContractors(id)
+            getAllrawMaterialUsedByContracter(id)
 
 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contractor])
-
+    // for table 1
     const getRawMaterialAssignedToContractors = async (ContractorId) => {
         await axiousConfig.get(`/getRawMaterialAssignedToAllContracters/${ContractorId}`)
         // await axiousConfig.get(`/getAllrawMaterialUsedByContacter/${ContractorId}`)
             .then(res => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 setRawMaterialAssignedToContractors(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
     }
+    // for table 2
+    const getAllrawMaterialUsedByContracter = async (ContractorId) => {
+        await axiousConfig.get(`/getAllrawMaterialUsedByContracter/${ContractorId}`)
+        // await axiousConfig.get(`/getAllrawMaterialUsedByContacter/${ContractorId}`)
+            .then(res => {
+                console.log(res.data.data)
+                setAllRawMaterialUsedByContracter(res.data.data)
+            })
+            .catch(err => setError(err.response.data.message))
+    }
+    // for table 3
     const getAllProductsRecieved = async (ContractorId) => {
         await axiousConfig.get(`/getAllProductsRecievedFromContracter/${ContractorId}`)
             .then(res => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 setAllProductsRecieved(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
@@ -184,7 +197,7 @@ const ContractorProfileDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable3 assignRawMaterial={contractor.assignRawMaterial}/>
+                    <BasicTable3 RawMaterialAssignedToContractors={RawMaterialAssignedToContractors}/>
                 </Paper>
                 <br />
                 <br />
@@ -199,7 +212,7 @@ const ContractorProfileDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
+                    <BasicTable AllRawMaterialUsedByContracter={AllRawMaterialUsedByContracter} />
                 </Paper>
                 <br />
                 <br />
@@ -240,12 +253,12 @@ const rows = [
 
 
 const columns = [
-    { id: 'rawMaterial', label: 'Raw material name', minWidth: 170 },
-    { id: 'date', label: 'Date', minWidth: 150 },
+    { id: 'name', label: 'Raw material name', minWidth: 170 },
+    { id: 'time', label: 'Date', minWidth: 150 },
     { id: 'quantity', label: 'Quantity', minWidth: 150 },
     {
-        id: 'pricePerUnit',
-        label: 'Price Per Unit',
+        id: 'note',
+        label: 'note',
         minWidth: 200,
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
@@ -271,9 +284,9 @@ const columns2 = [
     // },
 ];
 const columns3 = [
-    { id: 'rm', label: 'Raw Material name', minWidth: 170 },
+    { id: 'rawMaterial', label: 'Raw Material name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 170 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'quantity', label: 'Quantity', minWidth: 150 },
     {
         id: 'pricePerUnit',
         label: 'Price Per Unit',
@@ -284,7 +297,7 @@ const columns3 = [
 ];
 
 
-function BasicTable({RawMaterialAssignedToContractors}) {
+function BasicTable({AllRawMaterialUsedByContracter}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -316,7 +329,7 @@ function BasicTable({RawMaterialAssignedToContractors}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {RawMaterialAssignedToContractors?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {AllRawMaterialUsedByContracter?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
@@ -424,7 +437,7 @@ function BasicTable2({AllProductsRecieved}) {
 
 
 
-function BasicTable3({assignRawMaterial}) {
+function BasicTable3({RawMaterialAssignedToContractors}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -456,7 +469,7 @@ function BasicTable3({assignRawMaterial}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {assignRawMaterial?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {RawMaterialAssignedToContractors?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
