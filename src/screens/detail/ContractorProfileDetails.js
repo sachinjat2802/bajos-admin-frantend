@@ -67,26 +67,27 @@ const ContractorProfileDetails = () => {
             // });
             // setRawMaterialList(tempRawMaterial)
             // setRawMaterialQty(tempRawMaterialQty)
-            getRawMaterialAssignedToContractors()
-            getAllProductsRecieved()
+            getAllProductsRecieved(id)
+            getRawMaterialAssignedToContractors(id)
 
 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contractor])
 
-    const getRawMaterialAssignedToContractors = async (ProductId) => {
-        await axiousConfig.get(`/getAllProduct`)
+    const getRawMaterialAssignedToContractors = async (ContractorId) => {
+        await axiousConfig.get(`/getRawMaterialAssignedToAllContracters/${ContractorId}`)
+        // await axiousConfig.get(`/getAllrawMaterialUsedByContacter/${ContractorId}`)
             .then(res => {
                 console.log(res.data.data)
                 setRawMaterialAssignedToContractors(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
     }
-    const getAllProductsRecieved = async () => {
-        await axiousConfig.get(`/getAllProductsRecieved`)
+    const getAllProductsRecieved = async (ContractorId) => {
+        await axiousConfig.get(`/getAllProductsRecievedFromContracter/${ContractorId}`)
             .then(res => {
-                // console.log(res.data.data)
+                console.log(res.data.data)
                 setAllProductsRecieved(res.data.data)
             })
             .catch(err => setError(err.response.data.message))
@@ -198,7 +199,7 @@ const ContractorProfileDetails = () => {
                 <br />
                 <br />
                 <Paper elevation={2}>
-                    <BasicTable />
+                    <BasicTable RawMaterialAssignedToContractors={RawMaterialAssignedToContractors} />
                 </Paper>
                 <br />
                 <br />
@@ -239,12 +240,12 @@ const rows = [
 
 
 const columns = [
-    { id: 'name', label: 'Raw material name', minWidth: 170 },
+    { id: 'rawMaterial', label: 'Raw material name', minWidth: 170 },
     { id: 'date', label: 'Date', minWidth: 150 },
-    { id: 'qty', label: 'Quantity', minWidth: 150 },
+    { id: 'quantity', label: 'Quantity', minWidth: 150 },
     {
-        id: 'note',
-        label: 'Note',
+        id: 'pricePerUnit',
+        label: 'Price Per Unit',
         minWidth: 200,
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
@@ -283,7 +284,7 @@ const columns3 = [
 ];
 
 
-function BasicTable() {
+function BasicTable({RawMaterialAssignedToContractors}) {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -315,7 +316,7 @@ function BasicTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        {RawMaterialAssignedToContractors?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
