@@ -127,16 +127,8 @@ const SideNav = () => {
                                             Detail View
                                         </div>
                                     </div>
-                                    <div className='ms-5'
-                                        onClick={() => navigate('/contractor/profile')}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <div className='d-flex align-items-center fs-6 mb-3'>
-                                            <img src={File} alt="" className='me-2' />
-                                            Contractor Profile
-                                        </div>
-                                    </div>
-                                    <div className='ms-5'
+                                    {/* Temporary Commmented  */}
+                                    {/* <div className='ms-5'
                                         onClick={() => navigate('/contractor/efficiency')}
                                         style={{ cursor: 'pointer' }}
                                     >
@@ -144,7 +136,7 @@ const SideNav = () => {
                                             <img src={Chart} alt="" className='me-2' />
                                             Contractor Efficiency
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -179,7 +171,8 @@ const SideNav = () => {
                                             Product in manufacturing
                                         </div>
                                     </div>
-                                    <div className='ms-5'
+
+                                    {/* <div className='ms-5'
                                         onClick={() => navigate('/product/end')}
                                         style={{ cursor: 'pointer' }}
                                     >
@@ -187,7 +180,7 @@ const SideNav = () => {
                                             <img src={box} alt="" className='me-2' />
                                             End product received
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className='ms-5'
                                         onClick={() => navigate('/product/report')}
                                         style={{ cursor: 'pointer' }}
@@ -219,10 +212,10 @@ const SideNav = () => {
                                     >
                                         <div className='d-flex align-items-center fs-6 mb-3'>
                                             <img src={Trash} alt="" className='me-2' />
-                                            Remove unavailable products
+                                            Sale Product
                                         </div>
                                     </div>
-                                    <div className='ms-5'
+                                    {/* <div className='ms-5'
                                         onClick={() => navigate('/products/export')}
                                         style={{ cursor: 'pointer' }}
                                     >
@@ -230,7 +223,7 @@ const SideNav = () => {
                                             <img src={Note} alt="" className='me-2' />
                                             Export to excel
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
